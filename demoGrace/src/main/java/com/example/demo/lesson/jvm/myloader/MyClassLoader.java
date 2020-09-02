@@ -10,11 +10,11 @@ import java.io.FileInputStream;
 public class MyClassLoader extends ClassLoader {
 
     public static void main(String[] args) throws ClassNotFoundException {
-        Class clazz = new MyClassLoader().loadClass("jvm.loader.A",false);
+        Class clazz = new MyClassLoader().loadClass("com.example.demo.lesson.jvm.loader.A",false);
         System.out.println(clazz.getClassLoader());
     }
 
-    private String classPath = "/Users/seal/IdeaProjects/TeachingCode/TechingCode/demoGrace/src/main/java/com/example/demo/lesson";
+    private String classPath = "/Users/seal/IdeaProjects/TeachingCode/TechingCode/demoGrace/src/main/java";
 
     private byte[] loadByte(String name) throws Exception {
         name = name.replaceAll("\\.", "/");
@@ -44,7 +44,7 @@ public class MyClassLoader extends ClassLoader {
             Class<?> c = findLoadedClass(name);
             if (c == null) {
                 long t0 = System.nanoTime();
-                if (name.startsWith("jvm.loader")) {
+                if (name.startsWith("com.example.demo.lesson")) {
                     c = findClass(name);
                 } else {
                     c = this.getParent().loadClass(name);
