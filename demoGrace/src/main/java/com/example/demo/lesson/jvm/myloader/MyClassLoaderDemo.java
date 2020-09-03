@@ -10,14 +10,15 @@ import java.io.FileInputStream;
 public class MyClassLoaderDemo {
 
     public static void main(String[] args) throws ClassNotFoundException {
-        Class clazz1 = new MyClassLoader().loadClass("com.example.demo.lesson.jvm.loader.A",false);
+        // Class clazz1 = new MyClassLoader().loadClass("com.example.demo.lesson.jvm.loader.A",false);
+        //Class clazz1 = new MyClassLoader().loadClass("java.lang.Byte",false);
         Class clazz2 = new MyClassLoader2().loadClass("com.example.demo.lesson.jvm.loader.A",false);
         System.out.println(new MyClassLoaderDemo().getClass().getClassLoader());
-        System.out.println(clazz1.getClassLoader());
+        // System.out.println(clazz1.getClassLoader());
         System.out.println(clazz2.getClassLoader());
     }
 
-    public static String classPath = "/Users/seal/IdeaProjects/TeachingCode/TechingCode/demoGrace/src/main/java";
+    public static String classPath = "F:\\IdeaProjects\\TechingCode\\demoGrace\\src\\main\\java";
     private static byte[] loadByte(String name) throws Exception {
         name = name.replaceAll("\\.", "/");
         FileInputStream fis = new FileInputStream(classPath + "/" + name
@@ -51,7 +52,7 @@ public class MyClassLoaderDemo {
                 Class<?> c = findLoadedClass(name);
                 if (c == null) {
                     long t0 = System.nanoTime();
-                    if (name.startsWith("com.example.demo.lesson")) {
+                    if (name.startsWith("java.lang.Byte")) {
                         c = findClass(name);
                     } else {
                         c = this.getParent().loadClass(name);
@@ -63,9 +64,6 @@ public class MyClassLoaderDemo {
                         c = findClass(name);
 
                         // this is the defining class loader; record the stats
-                        sun.misc.PerfCounter.getParentDelegationTime().addTime(t1 - t0);
-                        sun.misc.PerfCounter.getFindClassTime().addElapsedTimeFrom(t1);
-                        sun.misc.PerfCounter.getFindClasses().increment();
                     }
                 }
                 if (resolve) {
@@ -110,9 +108,6 @@ public class MyClassLoaderDemo {
                         c = findClass(name);
 
                         // this is the defining class loader; record the stats
-                        sun.misc.PerfCounter.getParentDelegationTime().addTime(t1 - t0);
-                        sun.misc.PerfCounter.getFindClassTime().addElapsedTimeFrom(t1);
-                        sun.misc.PerfCounter.getFindClasses().increment();
                     }
                 }
                 if (resolve) {
