@@ -10,11 +10,11 @@ import java.io.FileInputStream;
 public class MyClassLoaderDemo {
 
     public static void main(String[] args) throws ClassNotFoundException {
-        // Class clazz1 = new MyClassLoader().loadClass("com.example.demo.lesson.jvm.loader.A",false);
-        //Class clazz1 = new MyClassLoader().loadClass("java.lang.Byte",false);
+        Class clazz1 = new MyClassLoader().loadClass("com.example.demo.lesson.jvm.loader.A",false);
+//        Class clazz1 = new MyClassLoader().loadClass("java.lang.Byte",false);
         Class clazz2 = new MyClassLoader2().loadClass("com.example.demo.lesson.jvm.loader.A",false);
         System.out.println(new MyClassLoaderDemo().getClass().getClassLoader());
-        // System.out.println(clazz1.getClassLoader());
+        System.out.println(clazz1.getClassLoader());
         System.out.println(clazz2.getClassLoader());
     }
 
@@ -52,7 +52,7 @@ public class MyClassLoaderDemo {
                 Class<?> c = findLoadedClass(name);
                 if (c == null) {
                     long t0 = System.nanoTime();
-                    if (name.startsWith("java.lang.Byte")) {
+                    if (name.startsWith("com.example.demo.lesson")) {
                         c = findClass(name);
                     } else {
                         c = this.getParent().loadClass(name);

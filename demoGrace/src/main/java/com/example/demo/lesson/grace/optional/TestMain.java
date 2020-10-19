@@ -6,10 +6,7 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.CollectionUtils;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -46,6 +43,29 @@ public class TestMain {
         System.out.println(String.format("%s:%s", "map", CollectionUtils.isEmpty(map)));
         System.out.println(String.format("%s:%s", "set", CollectionUtils.isEmpty(set)));
         System.out.println(String.format("%s:%s", "arr", ArrayUtils.isEmpty(arr)));
+
+        List<Map<String, String>> listR = null;
+        String result = Optional.ofNullable(listR).flatMap(l -> l.stream().findAny())
+                .flatMap(l -> l.keySet().stream().findAny()).orElse(null);
+        System.out.println(result);
+        list = new ArrayList<Map<String, String>>();
+        result = Optional.ofNullable(listR).flatMap(l -> l.stream().findAny())
+                .flatMap(l -> l.keySet().stream().findAny()).orElse(null);
+        System.out.println(result);
+        list = new ArrayList<Map<String, String>>() {{
+            add(new HashMap<String, String>());
+        }};
+        result = Optional.ofNullable(listR).flatMap(l -> l.stream().findAny())
+                .flatMap(l -> l.keySet().stream().findAny()).orElse(null);
+        System.out.println(result);
+        list = new ArrayList<Map<String, String>>() {{
+            add(new HashMap<String, String>() {{
+                put("C", "0");
+            }});
+        }};
+        result = Optional.ofNullable(listR).flatMap(l -> l.stream().findAny())
+                .flatMap(l -> l.keySet().stream().findAny()).orElse(null);
+        System.out.println(result);
     }
 
     public static void nullTest(@NonNull String str){
