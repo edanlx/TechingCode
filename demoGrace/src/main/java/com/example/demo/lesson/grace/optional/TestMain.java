@@ -48,17 +48,17 @@ public class TestMain {
         String result = Optional.ofNullable(listR).flatMap(l -> l.stream().findAny())
                 .flatMap(l -> l.keySet().stream().findAny()).orElse(null);
         System.out.println(result);
-        list = new ArrayList<Map<String, String>>();
+        listR = new ArrayList<Map<String, String>>();
         result = Optional.ofNullable(listR).flatMap(l -> l.stream().findAny())
                 .flatMap(l -> l.keySet().stream().findAny()).orElse(null);
         System.out.println(result);
-        list = new ArrayList<Map<String, String>>() {{
+        listR = new ArrayList<Map<String, String>>() {{
             add(new HashMap<String, String>());
         }};
         result = Optional.ofNullable(listR).flatMap(l -> l.stream().findAny())
                 .flatMap(l -> l.keySet().stream().findAny()).orElse(null);
         System.out.println(result);
-        list = new ArrayList<Map<String, String>>() {{
+        listR = new ArrayList<Map<String, String>>() {{
             add(new HashMap<String, String>() {{
                 put("C", "0");
             }});
