@@ -1,3 +1,6 @@
-**/.idea/**
-**/target/**
+/.idea
+/target
+/demoGrace/.idea/
+/demoGrace/target/
 *.iml
+.gitignore
