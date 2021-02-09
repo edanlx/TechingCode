@@ -19,9 +19,4 @@ public class EnumReflects {
                 .collect(Collectors.toList());
         return result;
     }
-
-    public static <E extends Enum<E>> List<Map<String, Object>> getMap(Class<E> enumClass) {
-
-        return null;
-    }
 }
