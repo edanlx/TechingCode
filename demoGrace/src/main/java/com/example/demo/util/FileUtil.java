@@ -20,7 +20,6 @@ public class FileUtil {
     public static void read() throws FileNotFoundException {
         try {
             @Cleanup FileInputStream fis = new FileInputStream("");
-            new ValidatedRequestVO().setStr("123").setStr("23");
             ValidatedRequestVO.builder().str("123").build();
         }catch (IOException e){
             e.printStackTrace();

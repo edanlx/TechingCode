@@ -1,10 +1,12 @@
 package com.example.demo.bean;
 
+import com.example.demo.entity.ValidatedRequestVO;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.beans.Introspector;
 import java.lang.invoke.SerializedLambda;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
@@ -18,57 +20,88 @@ public class Reflections {
     private Reflections() {
     }
 
-    public static String fnToFieldName(IFn fn) {
-        try {
-            Method method = fn.getClass().getDeclaredMethod("writeReplace");
-            method.setAccessible(Boolean.TRUE);
-            SerializedLambda serializedLambda = (SerializedLambda) method.invoke(fn);
-            String getter = serializedLambda.getImplMethodName();
-            String fieldName = "";
-            if (getter.startsWith("get")) {
-                fieldName = Introspector.decapitalize(getter.replace("get", ""));
-            } else {
-                fieldName = Introspector.decapitalize(getter.replace("set", ""));
-            }
-            return fieldName;
-        } catch (ReflectiveOperationException e) {
-            log.warn(String.format("%s:%s",
-                    Thread.currentThread().getStackTrace()[1].getMethodName(), e.getMessage()), e);
+    public static <F, T> String fnToFieldName(IFn<F, T> fn) {
+        SerializedLambda serializedLambda = getSerializedLambda(fn);
+        String getter = serializedLambda.getImplMethodName();
+        String fieldName = "";
+        if (getter.startsWith("get")) {
+            fieldName = Introspector.decapitalize(getter.replace("get", ""));
         }
-        return "";
+        return fieldName;
     }
 
-    public static String fnToFnName(IFn fn) {
-        try {
-            Method method = fn.getClass().getDeclaredMethod("writeReplace");
-            method.setAccessible(Boolean.TRUE);
-            SerializedLambda serializedLambda = (SerializedLambda) method.invoke(fn);
-            return serializedLambda.getImplMethodName();
-        } catch (ReflectiveOperationException e) {
-            log.warn(String.format("%s:%s",
-                    Thread.currentThread().getStackTrace()[1].getMethodName(), e.getMessage()), e);
-        }
-        return "";
+    public static <F, T> String fnToFnName(IFn<F, T> fn) {
+        return getSerializedLambda(fn).getImplMethodName();
     }
 
-    public static String fnToMongoName(IFn fn) {
+    public static <F, T> Method fnToMethod(IFn<F, T> fn) {
+        SerializedLambda serializedLambda = getSerializedLambda(fn);
+        Method method = null;
+        try {
+            method = getClazz(serializedLambda).getDeclaredMethod(serializedLambda.getImplMethodName());
+        } catch (NoSuchMethodException e) {
+            log.error("", e);
+        }
+        return method;
+    }
+
+    public static <F, T> Field fnToField(IFn<F, T> fn) {
+        SerializedLambda serializedLambda = getSerializedLambda(fn);
+        String fieldName = "";
+        String getter = serializedLambda.getImplMethodName();
+        if (getter.startsWith("get")) {
+            fieldName = Introspector.decapitalize(getter.replace("get", ""));
+        }
+        Class clazz = getClazz(serializedLambda);
+        Field field = null;
+        try {
+            field = clazz.getDeclaredField(fieldName);
+        } catch (NoSuchFieldException e) {
+            log.error("", e);
+        }
+        return field;
+    }
+
+    public static <F, T> String fnToFieldNameVoid(IFnVoid<F, T> fn) {
+        SerializedLambda serializedLambda = getSerializedLambda(fn);
+        String getter = serializedLambda.getImplMethodName();
+        String fieldName = "";
+        if (getter.startsWith("set")) {
+            fieldName = Introspector.decapitalize(getter.replace("set", ""));
+        }
+        return fieldName;
+    }
+
+    private static SerializedLambda getSerializedLambda(Object fn) {
+        SerializedLambda serializedLambda = null;
         try {
             Method method = fn.getClass().getDeclaredMethod("writeReplace");
             method.setAccessible(Boolean.TRUE);
-            SerializedLambda serializedLambda = (SerializedLambda) method.invoke(fn);
-            String getter = serializedLambda.getImplMethodName();
-            String fieldName = "";
-            if (getter.startsWith("get")) {
-                fieldName = Introspector.decapitalize(getter.replace("get", ""));
-            } else {
-                fieldName = Introspector.decapitalize(getter.replace("set", ""));
-            }
-            Field field = Class.forName(serializedLambda.getImplClass().replace("/", ".")).getDeclaredField(fieldName).getAnnotation(Field.class);
-            return field == null ? fieldName : field.value();
-        } catch (ReflectiveOperationException e) {
-            log.warn(String.format("%s:%s",
-                    Thread.currentThread().getStackTrace()[1].getMethodName(), e.getMessage()), e);
+            serializedLambda = (SerializedLambda) method.invoke(fn);
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            log.error("", e);
         }
-        return "";
+        return serializedLambda;
+    }
+
+    private static Class getClazz(SerializedLambda serializedLambda) {
+        Class clazz = null;
+        try {
+            clazz = Class.forName(serializedLambda.getImplClass().replace("/", "."));
+        } catch (ClassNotFoundException e) {
+            log.error("", e);
+        }
+        return clazz;
+    }
+
+    public static void main(String[] args) {
+        String fieldName = Reflections.fnToFieldName(ValidatedRequestVO::getStr);
+        System.out.println("字段名：" + fieldName);
+        String fnName = Reflections.fnToFnName(ValidatedRequestVO::getStr);
+        System.out.println("方法名：" + fnName);
+        String fieldName2 = Reflections.fnToFieldNameVoid(ValidatedRequestVO::setStr);
+        System.out.println("字段名：" + fieldName2);
+        Method method = Reflections.fnToMethod(ValidatedRequestVO::getStartDate);
+        System.out.println("注解：" + Reflections.fnToField(ValidatedRequestVO::getStartDate).getAnnotation(org.springframework.data.mongodb.core.mapping.Field.class).value());
     }
 }
