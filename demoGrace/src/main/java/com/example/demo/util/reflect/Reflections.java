@@ -1,4 +1,4 @@
-package com.example.demo.bean;
+package com.example.demo.util.reflect;
 
 import com.example.demo.entity.ValidatedRequestVO;
 import lombok.extern.slf4j.Slf4j;
