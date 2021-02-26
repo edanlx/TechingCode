@@ -7,6 +7,7 @@ import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class EnumReflects {
@@ -18,5 +19,9 @@ public class EnumReflects {
                 .map(en -> listField.stream().collect(Collectors.toMap(Field::getName, field -> ReflectionUtils.getField(field, en))))
                 .collect(Collectors.toList());
         return result;
+    }
+
+    public static <E extends Enum<E>, T> Map<T, E> enumToMap(Class<E> enumClass, Function<E, T> keyFn) {
+        return Arrays.stream(enumClass.getEnumConstants()).collect(Collectors.toMap(keyFn, (l) -> (l)));
     }
 }

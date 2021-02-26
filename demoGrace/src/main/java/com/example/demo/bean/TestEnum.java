@@ -6,10 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * description
@@ -36,7 +34,7 @@ public enum TestEnum {
      * 描述
      */
     private String desc;
-    public final static Map<Integer, TestEnum> ENUM_CODE = Arrays.stream(TestEnum.values()).collect(Collectors.toMap(TestEnum::getCode, v -> v));
+    public final static Map<Integer, TestEnum> ENUM_CODE = EnumReflects.enumToMap(TestEnum.class, TestEnum::getCode);
     public final static List<Map<String, Object>> ENUM_LIST = EnumReflects.getListMap(TestEnum.class);
 }
 

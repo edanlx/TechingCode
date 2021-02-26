@@ -15,9 +15,12 @@ import java.util.stream.Stream;
 
 public class MultiList {
 
-    public static void handle(TestMultObjectParent obj1, TestMultObject obj2, TestMultObjectChild obj3) {
-        System.out.println(obj3);
+    public static class Handle{
+        public static void handle(TestMultObjectParent obj1, TestMultObject obj2, TestMultObjectChild obj3) {
+            System.out.println(obj3);
+        }
     }
+
 
     public static void main(String[] args) {
         List<TestMultObjectParent> data = new ArrayList<TestMultObjectParent>() {{
@@ -51,17 +54,16 @@ public class MultiList {
                 }}).build());
             }}).build());
         }};
-
         List<Method> methodList = new ArrayList<Method>() {{
             add(Reflections.fnToMethod(TestMultObjectParent::getList));
             add(Reflections.fnToMethod(TestMultObject::getList));
         }};
-        Method invoke = ReflectionUtils.findMethod(MultiList.class, "handle", TestMultObjectParent.class, TestMultObject.class, TestMultObjectChild.class);
-        handleMultiList(data, methodList, invoke, new MultiList());
+        handleMultiList(data, methodList, Handle.class, new MultiList());
         System.out.println();
     }
 
-    public static void handleMultiList(List data, List<Method> methodList, Method invoke, Object obj) {
+    public static void handleMultiList(List data, List<Method> methodList, Class clazz, Object obj) {
+        Method invoke = clazz.getMethods()[0];
         List<List> objects = new ArrayList<>();
         handleMultiList(data, methodList, 0, objects);
         for (List object : objects) {
