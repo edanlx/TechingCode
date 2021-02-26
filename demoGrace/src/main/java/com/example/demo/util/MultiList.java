@@ -15,8 +15,8 @@ import java.util.stream.Stream;
 
 public class MultiList {
 
-    public static class Handle{
-        public static void handle(TestMultObjectParent obj1, TestMultObject obj2, TestMultObjectChild obj3) {
+    public static class Handle {
+        public static void handle(TestMultObjectParent obj1, TestMultObject obj2, TestMultObjectChild obj3,String a,int b) {
             System.out.println(obj3);
         }
     }
@@ -58,16 +58,22 @@ public class MultiList {
             add(Reflections.fnToMethod(TestMultObjectParent::getList));
             add(Reflections.fnToMethod(TestMultObject::getList));
         }};
-        handleMultiList(data, methodList, Handle.class, new MultiList());
+        List<Object> extend = new ArrayList<Object>() {{
+            add("1");
+            add(1);
+        }};
+        handleMultiList(data, methodList, Handle.class, new MultiList(),extend);
         System.out.println();
     }
 
-    public static void handleMultiList(List data, List<Method> methodList, Class clazz, Object obj) {
+    public static void handleMultiList(List data, List<Method> methodList, Class clazz, Object obj, List extend) {
         Method invoke = clazz.getMethods()[0];
         List<List> objects = new ArrayList<>();
         handleMultiList(data, methodList, 0, objects);
         for (List object : objects) {
+            object.addAll(extend);
             ReflectionUtils.invokeMethod(invoke, obj, object.toArray());
+            object.clear();
         }
     }
 
