@@ -1,5 +1,6 @@
 package com.example.demo.util.delay;
 
+import java.math.BigDecimal;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -32,7 +33,11 @@ public class Delay {
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
+        BigDecimal bigDecimal = new BigDecimal("");
+        System.out.println(System.currentTimeMillis());
+        Thread.sleep(1000);
+        System.out.println(System.currentTimeMillis());
         showLog(1, () -> {
             System.out.println(1);
             return 1;

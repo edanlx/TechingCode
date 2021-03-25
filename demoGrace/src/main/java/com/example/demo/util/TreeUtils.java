@@ -1,7 +1,6 @@
 package com.example.demo.util;
 
 import com.example.demo.bean.TestTreeObj;
-import com.example.demo.util.reflect.IFn;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
@@ -12,6 +11,12 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+/**
+ * 树和平铺相关工具类
+ *
+ * @author 876651109@qq.com
+ * @date 2021/3/1 8:21 下午
+ */
 public class TreeUtils {
     public static void main(String[] args) {
         List<TestTreeObj> list = new ArrayList<TestTreeObj>() {{
@@ -47,7 +52,18 @@ public class TreeUtils {
         System.out.println(result2);
     }
 
-    public static <F> void treeToListDeep(List<F> source, List<F> target, IFn<F, List<F>> childListFn, Predicate<F> addTargetCondition) {
+    /**
+     * 树转平铺
+     * treeToListDeep(testTreeObjs, result, TestTreeObj::getTestTreeObj, (l) -> l.getTestTreeObj() == null);
+     *
+     * @param source 源数据
+     * @param target 目标容器
+     * @param childListFn 递归调用方法
+     * @param addTargetCondition 添加到容器的判断方法
+     * @author 876651109@qq.com
+     * @date 2021/3/1 8:19 下午
+     */
+    public static <F> void treeToListDeep(List<F> source, List<F> target, Function<F, List<F>> childListFn, Predicate<F> addTargetCondition) {
         if (CollectionUtils.isEmpty(source)) {
             return;
         }
@@ -59,6 +75,18 @@ public class TreeUtils {
         }
     }
 
+    /**
+     * List<TestTreeObj> treeResult = listToTree(list, TestTreeObj::setTestTreeObj, TestTreeObj::getId, TestTreeObj::getPid, (l) -> l.getPid() == 0);
+     *
+     * @param source 源数据
+     * @param childListFn 设置递归的方法
+     * @param idFn 获取id的方法
+     * @param pidFn 获取父id的方法
+     * @param getRootCondition 获取根节点的提哦啊见
+     * @return {@link List<F>}
+     * @author 876651109@qq.com
+     * @date 2021/3/1 8:18 下午
+     */
     public static <F, T> List<F> listToTree(List<F> source, BiConsumer<F, List<F>> childListFn, Function<F, T> idFn, Function<F, T> pidFn, Predicate<F> getRootCondition) {
         List<F> tree = new ArrayList<>();
         Map<T, List<F>> map = new HashMap<>();
