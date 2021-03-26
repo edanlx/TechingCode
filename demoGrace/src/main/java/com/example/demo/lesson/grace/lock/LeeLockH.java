@@ -2,7 +2,7 @@ package com.example.demo.lesson.grace.lock;
 
 import java.util.concurrent.locks.AbstractQueuedSynchronizer;
 
-public class LeeLock {
+public class LeeLockH {
     private static class Sync extends AbstractQueuedSynchronizer {
         @Override
         protected boolean tryAcquire (int arg) {
@@ -29,17 +29,17 @@ public class LeeLock {
 
     static int count = 0;
     public static void main (String[] args) throws InterruptedException {
-        LeeLock leeLock = new LeeLock();
+        LeeLockH leeLockH = new LeeLockH();
         Runnable runnable = () -> {
             try {
-                leeLock.lock();
+                leeLockH.lock();
                 for (int i = 0; i < 10000; i++) {
                     count++;
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {
-                leeLock.unlock();
+                leeLockH.unlock();
             }
 
         };
