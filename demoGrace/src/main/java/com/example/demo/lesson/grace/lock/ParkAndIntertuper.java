@@ -39,6 +39,9 @@ public class ParkAndIntertuper {
      *     }
      *     unpark(this);    //注意这是Thread的成员方法，所以我们可以通过this获得Thread对象
      * }
+     *
+     * 总结调用interrupt后无法阻塞
+     * 需要调用interrupted才可以park
      * @param args
      * @throws InterruptedException
      */
