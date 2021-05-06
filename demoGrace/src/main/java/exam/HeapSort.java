@@ -15,6 +15,7 @@ public class HeapSort {
 
     /**
      * 创建堆，
+     *
      * @param arr 待排序列
      */
     private static void heapSort(int[] arr) {
@@ -38,7 +39,8 @@ public class HeapSort {
 
     /**
      * 调整堆
-     * @param arr 待排序列
+     *
+     * @param arr    待排序列
      * @param parent 父节点
      * @param length 待排序列尾元素索引
      */
@@ -64,7 +66,8 @@ public class HeapSort {
             // 把孩子结点的值赋给父结点
             arr[parent] = arr[lChild];
 
-            //选取孩子结点的左孩子结点,继续向下筛选
+            // 如果成功将该节点赋值给原父节点，那么继续向下，每次循环都是将下级赋值给上级，退出循环时将最底下无法替换的(主动退出循环的)，将值赋值给最后子节点
+            // 选取孩子结点的左孩子结点,继续向下筛选
             parent = lChild;
             lChild = 2 * lChild + 1;
         }
