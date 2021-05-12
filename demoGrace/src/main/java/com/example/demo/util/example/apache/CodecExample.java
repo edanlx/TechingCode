@@ -1,4 +1,4 @@
-package com.example.demo.util.exmaple.apache;
+package com.example.demo.util.example.apache;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.Hex;

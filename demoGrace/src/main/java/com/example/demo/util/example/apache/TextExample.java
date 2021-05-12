@@ -1,4 +1,4 @@
-package com.example.demo.util.exmaple.apache;
+package com.example.demo.util.example.apache;
 
 import com.google.common.collect.Maps;
 import com.google.common.primitives.Longs;

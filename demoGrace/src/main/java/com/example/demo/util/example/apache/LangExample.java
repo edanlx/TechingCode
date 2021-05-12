@@ -1,4 +1,4 @@
-package com.example.demo.util.exmaple.apache;
+package com.example.demo.util.example.apache;
 
 import org.apache.commons.lang3.*;
 import org.apache.commons.lang3.math.NumberUtils;
