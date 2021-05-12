@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.text.StringEscapeUtils;
+import org.springframework.aop.framework.AopContext;
 import org.springframework.cglib.beans.BeanCopier;
 import org.springframework.cglib.beans.BeanMap;
 import org.springframework.cglib.beans.ImmutableBean;
@@ -120,6 +121,8 @@ public class SpringExample {
         SpringExample bean = ac.getBean(SpringExample.class);
         // 根据继承或实现获取bean
         Map<String, SpringExample> beansOfType = ac.getBeansOfType(SpringExample.class);
+        // 获取当前代理对象，service层常用
+        AopContext.currentProxy();
     }
 
     private void otherExample(){
