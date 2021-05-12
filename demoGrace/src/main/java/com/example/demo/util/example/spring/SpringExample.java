@@ -3,12 +3,17 @@ package com.example.demo.util.example.spring;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.springframework.cglib.beans.BeanCopier;
 import org.springframework.cglib.beans.BeanMap;
 import org.springframework.cglib.beans.ImmutableBean;
+import org.springframework.context.ApplicationContext;
 import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.core.io.support.LocalizedResourceHelper;
 import org.springframework.lang.Nullable;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.util.ReflectionUtils;
+import org.springframework.util.ResourceUtils;
 import org.springframework.util.StopWatch;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -32,6 +37,8 @@ import java.util.Map;
 public class SpringExample {
     private String testName;
 
+    private static ApplicationContext ac;
+
     public static void main(String[] args) {
         // reflectionExample();
         cglibExample();
@@ -39,6 +46,7 @@ public class SpringExample {
 
     @Nullable
     private static void reflectionExample() {
+        // 各种反射姿势，可以躲过代码检查
         Method reflectionExample = ReflectionUtils.findMethod(SpringExample.class, "reflectionExample");
         System.out.println(reflectionExample);
         Field testName = ReflectionUtils.findField(SpringExample.class, "testName");
@@ -49,7 +57,7 @@ public class SpringExample {
     }
 
     private static void cglibExample() {
-        // 注意cglib是对字节码操作，代理模式就不在这里介绍了，spring aop非常好用了
+        // 注意cglib是对字节码操作，代理模式就不在这里介绍了，spring aop非常好用了，不过这个是spring带的cglib实际上不是spring的东西
 
         // 创建不可变bean，简直太好用了，避免缓存被别人瞎改
         SpringExample bean = new SpringExample();
@@ -91,7 +99,6 @@ public class SpringExample {
     }
 
     private static void springExample() {
-        // spring工具众多，只记录比较好用的，大部分工具都不如apache的好用
         // 获取request
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         // 获取cookie
@@ -106,5 +113,23 @@ public class SpringExample {
         sw.start("step 2");
         sw.stop();
         System.out.println(sw.prettyPrint());
+    }
+
+    private void beanExample(){
+        // 获取bean
+        SpringExample bean = ac.getBean(SpringExample.class);
+        // 根据继承或实现获取bean
+        Map<String, SpringExample> beansOfType = ac.getBeansOfType(SpringExample.class);
+    }
+
+    private void otherExample(){
+        // 其下有各种转义，用处有限
+        System.out.println(StringEscapeUtils.class);
+        // 资源加载工具类，但是不如springBoot注解好用
+        System.out.println(ResourceUtils.class);
+        // 读取properties，马马虎虎的东西，java自带的也不差
+        System.out.println(LocalizedResourceHelper.class);
+        // apache的IO包可太好用了,以及很多其它和apache重复的就不介绍了
+        System.out.println(FileCopyUtils.class);
     }
 }
