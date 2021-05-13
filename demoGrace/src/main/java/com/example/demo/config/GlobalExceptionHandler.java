@@ -1,6 +1,6 @@
-package config;
+package com.example.demo.config;
 
-import bean.ResponseVO;
+import com.example.demo.bean.ResponseVO;
 import enums.ErrorCodeEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.web.servlet.error.ErrorController;

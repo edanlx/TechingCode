@@ -1,4 +1,4 @@
-package bean;
+package com.example.demo.bean;
 
 
 import com.fasterxml.jackson.annotation.JsonInclude;

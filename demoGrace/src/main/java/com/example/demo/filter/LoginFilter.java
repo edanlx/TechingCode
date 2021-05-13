@@ -1,4 +1,4 @@
-package filter;
+package com.example.demo.filter;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;

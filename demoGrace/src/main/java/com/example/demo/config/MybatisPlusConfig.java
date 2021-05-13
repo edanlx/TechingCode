@@ -1,4 +1,4 @@
-package config;
+package com.example.demo.config;
 
 public class MybatisPlusConfig {
     /**

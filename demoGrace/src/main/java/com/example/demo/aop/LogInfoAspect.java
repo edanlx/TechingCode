@@ -1,6 +1,6 @@
-package aop;
+package com.example.demo.aop;
 
-import annotations.LogAnnotation;
+import com.example.demo.annotations.LogAnnotation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.aspectj.lang.ProceedingJoinPoint;

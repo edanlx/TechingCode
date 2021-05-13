@@ -1,4 +1,4 @@
-package config;
+package com.example.demo.config;
 
 /**
  * @author seal email:876651109@qq.com
