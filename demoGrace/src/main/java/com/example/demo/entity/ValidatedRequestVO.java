@@ -1,9 +1,13 @@
 package com.example.demo.entity;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.*;
-import org.springframework.data.mongodb.core.mapping.Field;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
+import javax.annotation.Nullable;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -21,12 +25,9 @@ import java.util.Date;
 @Data
 public class ValidatedRequestVO implements Serializable {
     private static final long serialVersionUID = -4362139990889081422L;
-    @Field("str")
     private String str;
-    @Field("start_date")
+    @Nullable
     private Date startDate;
-    @Field("end_date")
     private LocalDateTime endDate;
-    @Field("begin_date")
     private Date beginDate;
 }

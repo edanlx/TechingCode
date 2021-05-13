@@ -1,0 +1,21 @@
+package otherexample;
+
+import java.io.IOException;
+
+public class ThumbnailsExample {
+    public static void main(String[] args) throws IOException {
+        // https://blog.csdn.net/zmx729618/article/details/78729049
+        // scale 1f为原图长款
+        // outputQuality 质量
+        // size指定大小
+        // rotate旋转
+        // outputFormat转换格式
+        Thumbnails.of("/Users/seal/Downloads/test.png")
+                .scale(1f)
+                .outputQuality(0.5f)
+                .size(200, 300)
+                .rotate(90)
+                .outputFormat("png")
+                .toFile("/Users/seal/Downloads/test2.png");
+    }
+}

@@ -4,6 +4,7 @@ import com.example.demo.entity.ValidatedRequestVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.ReflectionUtils;
 
+import javax.annotation.Nullable;
 import java.beans.Introspector;
 import java.lang.invoke.SerializedLambda;
 import java.lang.reflect.Field;
@@ -104,6 +105,6 @@ public class Reflections {
         String fieldName2 = Reflections.fnToFieldNameVoid(ValidatedRequestVO::setStr);
         System.out.println("字段名：" + fieldName2);
         Method method = Reflections.fnToMethod(ValidatedRequestVO::getStartDate);
-        System.out.println("注解：" + Reflections.fnToField(ValidatedRequestVO::getStartDate).getAnnotation(org.springframework.data.mongodb.core.mapping.Field.class).value());
+        System.out.println("注解：" + Reflections.fnToField(ValidatedRequestVO::getStartDate).getAnnotation(Nullable.class));
     }
 }

@@ -1,0 +1,104 @@
+package com.example.demo.controller.bussiness;
+
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.example.demo.annotations.LogAnnotation;
+import com.example.demo.common.ErrorCodeConstant;
+import com.example.demo.common.ResponseVO;
+import com.example.demo.common.utils.PageHelperLimit;
+import com.example.demo.entity.DO.bussiness.User;
+import com.example.demo.enums.ErrorCodeEnum;
+import com.example.demo.service.bussiness.IUserService;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.List;
+
+/**
+ * @author seal email:876651109@qq.com
+ * @date 2020/6/5 9:22 AM
+ * @description
+ */
+@Controller
+@RequestMapping("/user")
+@ResponseBody
+@Slf4j
+@LogAnnotation(parameter = true, result = true)
+public class UserController {
+
+    @Autowired
+    private IUserService userService;
+
+    @GetMapping("/getUserById")
+    @ApiOperation("返回user")
+    public ResponseVO<User> getUserById() {
+        return ErrorCodeEnum.getResponse(ErrorCodeConstant.SUCCESS).setData(userService.getById(1));
+    }
+
+    @GetMapping("/count")
+    @ApiOperation("返回user")
+    public ResponseVO<User> count() {
+        return ErrorCodeEnum.getResponse(ErrorCodeConstant.SUCCESS).setData(userService.count());
+    }
+
+    @GetMapping("/countLike")
+    @ApiOperation("返回user")
+    public ResponseVO<User> countLike() {
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        queryWrapper.likeLeft("id","1");
+        return ErrorCodeEnum.getResponse(ErrorCodeConstant.SUCCESS).setData(userService.count(queryWrapper));
+    }
+
+    @GetMapping("/getUserPart")
+    @ApiOperation("返回user")
+    public ResponseVO<List<User>> getUserPart() {
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        queryWrapper.select("id","userid");
+        queryWrapper.likeLeft("id","1");
+        return ErrorCodeEnum.getResponse(ErrorCodeConstant.SUCCESS).setData(userService.list(queryWrapper));
+    }
+
+    @GetMapping("/getUserPartPage")
+    @ApiOperation("返回user")
+    public ResponseVO<PageInfo<User>> getUserPartPage() {
+        LambdaQueryWrapper<User> lambdaQueryWrapper = Wrappers.lambdaQuery();
+        lambdaQueryWrapper.likeLeft(User::getId,"1")
+                .select(User::getId,User::getAge);
+        PageHelperLimit.limit();
+        PageInfo<User> pageInfo = new PageInfo(userService.getBaseMapper().selectList(lambdaQueryWrapper));
+        PageHelper.clearPage();
+        return ErrorCodeEnum.getResponse(ErrorCodeConstant.SUCCESS).setData(pageInfo);
+    }
+
+    @GetMapping("/getUserEnPartPage")
+    @ApiOperation("返回user")
+    public ResponseVO<PageInfo<User>> getUserEnPartPage() {
+        LambdaQueryWrapper<User> lambdaQueryWrapper = Wrappers.lambdaQuery();
+        lambdaQueryWrapper.likeLeft(User::getId,"1")
+                .select(User.class,x->!"age".equals(x.getColumn()));
+        PageHelperLimit.limit();
+        PageInfo<User> pageInfo = new PageInfo(userService.getBaseMapper().selectList(lambdaQueryWrapper));
+        PageHelper.clearPage();
+        return ErrorCodeEnum.getResponse(ErrorCodeConstant.SUCCESS).setData(pageInfo);
+    }
+
+    @GetMapping("/getUserEntity")
+    @ApiOperation("返回user")
+    public ResponseVO<PageInfo<User>> getUserEntity() {
+        LambdaQueryWrapper<User> lambdaQueryWrapper = Wrappers.lambdaQuery();
+        lambdaQueryWrapper.setEntity(new User().setId(1));
+        PageHelperLimit.limit();
+        PageInfo<User> pageInfo = new PageInfo(userService.getBaseMapper().selectList(lambdaQueryWrapper));
+        PageHelper.clearPage();
+        return ErrorCodeEnum.getResponse(ErrorCodeConstant.SUCCESS).setData(pageInfo);
+    }
+
+}

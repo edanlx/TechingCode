@@ -1,0 +1,74 @@
+package com.example.demo.service.bussiness.impl;
+
+import com.example.demo.annotations.LogAnnotation;
+import com.example.demo.common.utils.bean.FnConverter;
+import com.example.demo.entity.DO.bussiness.Foo;
+import com.example.demo.service.bussiness.FooService;
+import com.github.pagehelper.Page;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
+/** 
+* @description
+* @author seal 876651109@qq.com
+* @date 2020/6/7 9:15 AM
+* @param  
+* @return  
+*/
+@Slf4j
+@Service
+@LogAnnotation
+@Transactional
+public class FooServiceImpl implements FooService {
+    @Autowired
+    private MongoTemplate mongoTemplate;
+
+    @Override
+    public Foo saveObj(Foo foo) {
+        return mongoTemplate.insert(foo);
+    }
+
+    @Override
+    public List<Foo> saveBatch(List<Foo> list) {
+        return (List<Foo>) mongoTemplate.insertAll(list);
+    }
+
+    @Override
+    public long deleteById(String id) {
+        return mongoTemplate.remove(Query.query(Criteria.where(new FnConverter<Foo, Object>().fnToMongoName(Foo::getFoId)).is(id)), Foo.class).getDeletedCount();
+    }
+
+    @Override
+    public List<Foo> list(Page<Foo> page) {
+        // PageHelper.startPage
+        // page.getStartRow(), page.getEndRow()
+        // Stream.skip(page.getStartRow()).limit(page.getPageSize())
+        return mongoTemplate.find(Query.query(Criteria.where(new FnConverter<Foo, Object>().fnToMongoName(Foo::getFoId)).exists(true)).
+                with(PageRequest.of(page.getPageNum()-1, page.getPageSize())), Foo.class);
+    }
+
+    @Override
+    public Foo getById(String id) {
+       return mongoTemplate.findOne(Query.query(Criteria.where(new FnConverter<Foo, Object>().fnToMongoName(Foo::getFoId)).is(id)), Foo.class);
+       // return mongoTemplate.findOne(Query.query(Criteria.where("_id").is(id)), Foo.class);
+    }
+
+    @Override
+    public void updateById(String id) {
+    }
+
+    @Override
+    public void regName(String reg) {
+
+    }
+}
