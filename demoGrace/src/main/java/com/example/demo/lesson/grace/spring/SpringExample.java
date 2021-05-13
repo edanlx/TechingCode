@@ -1,4 +1,4 @@
-package com.example.demo.util.example.spring;
+package com.example.demo.lesson.grace.spring;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;

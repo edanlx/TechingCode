@@ -1,9 +1,8 @@
-package com.example.demo.util;
+package com.example.demo.lesson.grace.reflect;
 
 import com.example.demo.bean.TestMultObject;
 import com.example.demo.bean.TestMultObjectChild;
 import com.example.demo.bean.TestMultObjectParent;
-import com.example.demo.util.reflect.Reflections;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ReflectionUtils;
 

@@ -1,6 +1,6 @@
 package com.example.demo.bean;
 
-import com.example.demo.util.reflect.EnumReflects;
+import com.example.demo.lesson.grace.reflect.EnumReflects;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
