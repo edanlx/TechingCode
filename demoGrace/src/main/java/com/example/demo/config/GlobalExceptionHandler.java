@@ -65,32 +65,13 @@ public class GlobalExceptionHandler implements ErrorController {
     }
 
     /**
-     * json解析异常
+     * 重写校验异常，按照统一格式返回
      *
-     * @author seal 876651109@qq.com
-     * @date 2020/6/4 1:39 AM
-     * <p>
-     * 有如下情况
-     * JSON parse error: Cannot deserialize value of type `java.util.Date` from String "2020": expected format "yyyy/MM"; nested exception is com.fasterxml.jackson.databind.exc.InvalidFormatException: Cannot deserialize value of type `java.util.Date` from String "2020": expected format "yyyy/MM"
-     * at [Source: (PushbackInputStream); line: 6, column: 15] (through reference chain: com.example.demo.entity.ValidatedRequestVO["startDate"])
-     * <p>
-     * JSON parse error: Cannot deserialize value of type `java.time.LocalDateTime` from String "2020/05/1": Failed to deserialize java.time.LocalDateTime: (java.time.format.DateTimeParseException) Text '2020/05/1' could not be parsed at index 8
+     * @param e
+     * @return {@link ResponseVO< List< FieldValidError>>}
+     * @author 876651109@qq.com
+     * @date 2021/5/14 5:06 下午
      */
-//    @ExceptionHandler(HttpMessageNotReadableException.class)
-//    public ResponseVO<String> HttpMessageNotReadableException(HttpMessageNotReadableException e) throws ClassNotFoundException, NoSuchFieldException {
-//        String regClass = "reference chain: (.*?)\\[";
-//        Matcher classMatcher = Pattern.compile(regClass).matcher(e.getMessage());
-//        classMatcher.find();
-//        Class clazz = Class.forName(classMatcher.group(1));
-//
-//        String fieldExpect = "\\[\"(.*?)\"\\]";
-//        Matcher fieldMatcher = Pattern.compile(fieldExpect).matcher(e.getMessage());
-//        fieldMatcher.find();
-//        Field field = clazz.getDeclaredField(fieldMatcher.group(1));
-//
-//        ResponseVO vo = ErrorCodeEnum.getResponse(ErrorCodeConstant.USER_REQUEST_PARAMETER_ERROR);
-//        return vo.setMsg(vo.getMsg() + field.getAnnotation(JsonFormat.class).pattern()).setData(field.getName());
-//    }
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseVO<List<FieldValidError>> MethodArgumentNotValidException(MethodArgumentNotValidException e) {
         ResponseVO<List<FieldValidError>> vo = ResponseVO.<List<FieldValidError>>builder().build();

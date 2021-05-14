@@ -9,7 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.io.IOException;
 
 /**
- * 自定义序列化
+ * 实现去空格反序列化
  *
  * @author 876651109@qq.com
  * @date 2021/5/14 1:46 下午
