@@ -24,19 +24,22 @@ public class LogInfoAspect {
     /**
      * https://www.cnblogs.com/zhangxufeng/p/9160869.html
      * https://www.cnblogs.com/LemonFive/p/10983875.html
-     *通过@Pointcut注解声明频繁使用的切点表达式
+     * 通过@Pointcut注解声明频繁使用的切点表达式
      */
-    @Pointcut("execution(* com.example.demo.controller..*.*(..))")
-    public void AspectController(){}
+    @Pointcut("execution(* com.example.demo..*.*(..))")
+    public void AspectController() {
+    }
 
-    @Pointcut("execution(* com.example.demo.service..*.*(..))")
-    public void AspectController2(){}
+    @Pointcut("execution(* com.example.demo..*.*(..))")
+    public void AspectController2() {
+    }
 
     /**
-    * 先执行、先退出
-    * @author seal 876651109@qq.com
-    * @date 2020/6/3 2:34 PM
-    */
+     * 先执行、先退出
+     *
+     * @author seal 876651109@qq.com
+     * @date 2020/6/3 2:34 PM
+     */
     @Around("AspectController() || AspectController2()")
     public Object doAround(ProceedingJoinPoint pjp) throws Throwable {
         log.debug("环绕前");
@@ -55,42 +58,52 @@ public class LogInfoAspect {
             log.info("{}:{}:parameter:{}", className, methodName, pjp.getArgs());
         }
         sw.start();
-        Object result = pjp.proceed();
-        sw.stop();
+        Object result = null;
+        try {
+            result = pjp.proceed();
+        } catch (Throwable e) {
+            if (logAnnotation.exception()) {
+                log.warn(e.getMessage(), e);
+                log.info("{}:{}:parameter:{}", className, methodName, pjp.getArgs());
+            }
+            throw e;
+        }
         if (logAnnotation.result()) {
             log.info("{}:{}:result:{}", className, methodName, result);
         }
+        sw.stop();
         if (logAnnotation.totalConsume()) {
             log.info("{}:{}:totalConsume:{}s", className, methodName, sw.getTotalTimeSeconds());
         }
         log.debug("环绕后");
         return result;
     }
+
     /**
-     * @description  在连接点执行之前执行的通知
+     * @description 在连接点执行之前执行的通知
      */
     @Before("AspectController()")
-    public void doBefore(){
+    public void doBefore() {
     }
 
     /**
-     * @description  在连接点执行之后执行的通知（返回通知和异常通知的异常）
+     * @description 在连接点执行之后执行的通知（返回通知和异常通知的异常）
      */
     @After("AspectController()")
-    public void doAfter(){
+    public void doAfter() {
     }
 
     /**
-     * @description  在连接点执行之后执行的通知（返回通知）
+     * @description 在连接点执行之后执行的通知（返回通知）
      */
     @AfterReturning("AspectController()")
-    public void doAfterReturning(){
+    public void doAfterReturning() {
     }
 
     /**
-     * @description  在连接点执行之后执行的通知（异常通知）
+     * @description 在连接点执行之后执行的通知（异常通知）
      */
     @AfterThrowing("AspectController()")
-    public void doAfterThrowingGame(){
+    public void doAfterThrowingGame() {
     }
 }
