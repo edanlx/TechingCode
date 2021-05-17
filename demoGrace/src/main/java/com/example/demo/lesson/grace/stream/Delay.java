@@ -1,6 +1,5 @@
-package com.example.demo.util.delay;
+package com.example.demo.lesson.grace.stream;
 
-import java.math.BigDecimal;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -20,6 +19,7 @@ import java.util.function.Supplier;
  */
 public class Delay {
     public static <T> T showLog(int level, Supplier<T> method) {
+        // 日志级别等于1的时候执行，实际场景为从redis获取数据为空时执行刷新缓存并返回
         if (level == 1) {
             return method.get();
         } else {
@@ -28,28 +28,26 @@ public class Delay {
     }
 
     public static void showLog2(int level, Consumer method) {
+        // 日志街边等于3的时候输出日志
         if (level == 3) {
             method.accept(level);
         }
     }
 
     public static void main(String[] args) throws InterruptedException {
-        BigDecimal bigDecimal = new BigDecimal("");
-        System.out.println(System.currentTimeMillis());
-        Thread.sleep(1000);
-        System.out.println(System.currentTimeMillis());
+        // 输出
         showLog(1, () -> {
             System.out.println(1);
             return 1;
         });
+        // 不输出
         showLog(2, () -> {
             System.out.println(2);
             return 1;
         });
+        // 输出
         showLog2(3, System.out::println);
+        // 不输出
         showLog2(4, System.out::println);
-
-        Consumer<String> consumer = l -> System.out.println(l);
-        consumer.accept("hhhh");
     }
 }

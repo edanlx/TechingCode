@@ -1,5 +1,9 @@
 package enums;
 
+import com.example.demo.lesson.grace.front.Ifront;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -9,7 +13,7 @@ import java.util.stream.Stream;
  * @date 2020/6/3 5:54 PM
  * @description
  */
-public enum ErrorCodeEnum {
+public enum ErrorCodeEnum implements Ifront<ErrorCodeEnum> {
     SUCCESS("00000", "成功", "Success"),
     CLIENT_ERROR("A0001", "用户端错误", "Client error"),
     USER_REGISTRATION_ERROR("A0100", "用户注册错误", "User registration error"),
@@ -223,4 +227,22 @@ public enum ErrorCodeEnum {
     }
 
     public static final Map<String, ErrorCodeEnum> MAPS = Stream.of(ErrorCodeEnum.values()).collect(Collectors.toMap(ErrorCodeEnum::getCode, s -> s));
+
+    @Override
+    public Map<String, ErrorCodeEnum> getMap() {
+        return MAPS;
+    }
+
+    @JsonCreator
+    public static ErrorCodeEnum get(String value) {
+        if (StringUtils.isBlank(value)) {
+            return null;
+        }
+        ErrorCodeEnum errorCodeEnum = MAPS.get(value);
+        if (errorCodeEnum == null) {
+            return ErrorCodeEnum.valueOf(value);
+        } else {
+            return errorCodeEnum;
+        }
+    }
 }
