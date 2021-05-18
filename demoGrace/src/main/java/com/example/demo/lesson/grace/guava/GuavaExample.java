@@ -37,7 +37,7 @@ public class GuavaExample {
 //        collections();
 //        eventBus();
 //        rate();
-        cache();
+//        cache();
     }
 
     public static void eventBus() {
@@ -99,7 +99,7 @@ public class GuavaExample {
         BloomFilter<Integer> bloomFilter = BloomFilter.create(Funnels.integerFunnel(), 2000, 0.0001);
         IntStream.range(0, 10000).forEach(bloomFilter::put);
         System.out.println(bloomFilter.mightContain(1));
-        // 只有-10、-7、-5、-2,而上面用2000个的长度存了一万个数据，有一定的误报率，当然你如果存10000个就会全都检测出来了，但也失去了布隆过滤的意义
+        // 只有-10、-7、-5、-2,因为这里的预期数据与实际相差比较大，所以布隆过滤并不完全
         IntStream.range(-10, 0).forEach(s -> {
             if (!bloomFilter.mightContain(s)) {
                 System.out.println(s);
@@ -223,7 +223,7 @@ public class GuavaExample {
     @SneakyThrows
     public static void rate() {
         // 这里直接设置的就QPS(每秒查询率)
-        RateLimiter rateLimiter = RateLimiter.create(1);
+        RateLimiter rateLimiter = RateLimiter.create(0.01);
         while (true) {
             System.out.println(rateLimiter.tryAcquire());
             Thread.sleep(300);
