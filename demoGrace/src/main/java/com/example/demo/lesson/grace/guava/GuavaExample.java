@@ -1,6 +1,8 @@
 package com.example.demo.lesson.grace.guava;
 
 import com.google.common.collect.*;
+import com.google.common.eventbus.EventBus;
+import com.google.common.eventbus.Subscribe;
 import com.google.common.hash.BloomFilter;
 import com.google.common.hash.Funnels;
 import org.springframework.util.StopWatch;
@@ -18,10 +20,65 @@ public class GuavaExample {
         // immutableOrdinary();
 //         effectiveList();
 //        newCollections();
-        Hash();
+//        hash();
+//        collections();
+        eventBus();
     }
 
-    public static void Hash() {
+    public static void eventBus() {
+        EventBus eventBus = new EventBus("eventBusTest");
+        eventBus.register(new eventBusObject());
+        eventBus.post(100);
+        eventBus.post("我是字符串");
+    }
+
+    public static class eventBusObject {
+        @Subscribe
+        public void listenStr1(String str) {
+            System.out.println(str + "listenStr1");
+        }
+
+        @Subscribe
+        public void listenStr2(String str) {
+            System.out.println(str + "listenStr2");
+        }
+
+        @Subscribe
+        public void listenObj(Object str) {
+            System.out.println(str + "listenStr1");
+        }
+
+        @Subscribe
+        public void listenInt1(Integer str) {
+            System.out.println(str + "listenInt1");
+        }
+
+        public void listenInt2(Integer str) {
+            System.out.println(str + "listenInt2");
+        }
+    }
+
+    public static void collections() {
+        // 个人觉得比较又用的有如下几个方法，前几个可以看做是redis交集、并集的内存实现。后面是数据库笛卡尔积的内存实现
+        // 交集、并集、
+        Set<Integer> set1 = Stream.of(1, 2, 3, 4).collect(Collectors.toSet());
+        Set<Integer> set2 = Stream.of(3, 4, 5, 6).collect(Collectors.toSet());
+        // 求set1的差集
+        System.out.println(Sets.difference(set1, set2));
+        // 求set1和set2差集的并集
+        System.out.println(Sets.symmetricDifference(set1, set2));
+        // 求交集
+        System.out.println(Sets.intersection(set1, set2));
+        // 笛卡尔积
+        System.out.println(Sets.cartesianProduct(set1, set2));
+
+        // 笛卡尔积
+        List<Integer> list1 = Stream.of(1, 2, 3, 4).collect(Collectors.toList());
+        List<Integer> list2 = Stream.of(2, 3, 4, 5).collect(Collectors.toList());
+        System.out.println(Lists.cartesianProduct(list1, list2));
+    }
+
+    public static void hash() {
         // 存储格式，大小，误报率(如果判断出来不存在则一定不存在，如果判断出来存在则有可能存在有可能不存在，因为其机制和hash非常相似存在多个值对一个hash的情况)
         // 一般会根据订单号，如果不行的话可以使用byte数组
         BloomFilter<Integer> bloomFilter = BloomFilter.create(Funnels.integerFunnel(), 2000, 0.0001);
@@ -36,15 +93,15 @@ public class GuavaExample {
 
     }
 
-    public static void newCollections(){
+    public static void newCollections() {
         // 这里只介绍BiMap和Table。Multiset、Multimap这两个就是嵌了list进去
-        BiMap<Integer,String> biMap=HashBiMap.create();
-        biMap.put(1,"张三");
-        biMap.put(2,"李四");
-        biMap.put(3,"王五");
-        biMap.put(4,"赵六");
-        biMap.put(5,"李七");
-        biMap.put(6,"小小");
+        BiMap<Integer, String> biMap = HashBiMap.create();
+        biMap.put(1, "张三");
+        biMap.put(2, "李四");
+        biMap.put(3, "王五");
+        biMap.put(4, "赵六");
+        biMap.put(5, "李七");
+        biMap.put(6, "小小");
         Integer result = biMap.inverse().get("赵六");
         // 输出结果4
         System.out.println(result);
@@ -61,17 +118,17 @@ public class GuavaExample {
         Table<String, String, String> employeeTable = HashBasedTable.create();
 
         //initialize the table with employee details
-        employeeTable.put("IBM", "101","Mahesh");
-        employeeTable.put("IBM", "102","Ramesh");
-        employeeTable.put("IBM", "103","Suresh");
+        employeeTable.put("IBM", "101", "Mahesh");
+        employeeTable.put("IBM", "102", "Ramesh");
+        employeeTable.put("IBM", "103", "Suresh");
 
-        employeeTable.put("Microsoft", "111","Sohan");
-        employeeTable.put("Microsoft", "112","Mohan");
-        employeeTable.put("Microsoft", "113","Rohan");
+        employeeTable.put("Microsoft", "111", "Sohan");
+        employeeTable.put("Microsoft", "112", "Mohan");
+        employeeTable.put("Microsoft", "113", "Rohan");
 
-        employeeTable.put("TCS", "121","Ram");
-        employeeTable.put("TCS", "102","Shyam");
-        employeeTable.put("TCS", "123","Sunil");
+        employeeTable.put("TCS", "121", "Ram");
+        employeeTable.put("TCS", "102", "Shyam");
+        employeeTable.put("TCS", "123", "Sunil");
 
         //所有行数据
         System.out.println(employeeTable.cellSet());
