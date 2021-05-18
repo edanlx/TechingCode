@@ -1,16 +1,29 @@
 package com.example.demo.lesson.grace.guava;
 
-import com.google.common.collect.*;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.HashBiMap;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+import com.google.common.collect.Table;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.google.common.hash.BloomFilter;
 import com.google.common.hash.Funnels;
+import com.google.common.util.concurrent.RateLimiter;
+import lombok.SneakyThrows;
 import org.springframework.util.StopWatch;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -22,7 +35,9 @@ public class GuavaExample {
 //        newCollections();
 //        hash();
 //        collections();
-        eventBus();
+//        eventBus();
+//        rate();
+        cache();
     }
 
     public static void eventBus() {
@@ -90,7 +105,6 @@ public class GuavaExample {
                 System.out.println(s);
             }
         });
-
     }
 
     public static void newCollections() {
@@ -204,5 +218,41 @@ public class GuavaExample {
 
         List<Integer> collect = Stream.of(1, 2, 3, 4).collect(Collectors.toList());
         List<Integer> integers = ImmutableList.copyOf(collect);
+    }
+
+    @SneakyThrows
+    public static void rate() {
+        // 这里直接设置的就QPS(每秒查询率)
+        RateLimiter rateLimiter = RateLimiter.create(1);
+        while (true) {
+            System.out.println(rateLimiter.tryAcquire());
+            Thread.sleep(300);
+        }
+    }
+
+    @SneakyThrows
+    public static void cache() {
+        // 注意两个如果一起用有时候会有bug
+        Cache<Integer, Integer> accessBuild = CacheBuilder.newBuilder().expireAfterAccess(1, TimeUnit.SECONDS).build();
+        Cache<Integer, Integer> writeBuild = CacheBuilder.newBuilder().expireAfterWrite(1, TimeUnit.SECONDS).build();
+
+        accessBuild.put(1, 1);
+        accessBuild.put(2, 2);
+        writeBuild.put(1, 1);
+        writeBuild.put(2, 2);
+        // 输出1
+        System.out.println(accessBuild.getIfPresent(1));
+        // 输出1
+        System.out.println(writeBuild.getIfPresent(1));
+        Thread.sleep(500);
+        // 输出2
+        System.out.println(accessBuild.getIfPresent(2));
+        Thread.sleep(600);
+        // 输出null
+        System.out.println(accessBuild.getIfPresent(1));
+        // 输出2
+        System.out.println(accessBuild.getIfPresent(2));
+        // 输出null
+        System.out.println(writeBuild.getIfPresent(1));
     }
 }
