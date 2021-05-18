@@ -1,12 +1,8 @@
 package com.example.demo.lesson.grace.guava;
 
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.HashBiMap;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Table;
+import com.google.common.collect.*;
+import com.google.common.hash.BloomFilter;
+import com.google.common.hash.Funnels;
 import org.springframework.util.StopWatch;
 
 import java.util.Collections;
@@ -20,8 +16,24 @@ import java.util.stream.Stream;
 public class GuavaExample {
     public static void main(String[] args) {
         // immutableOrdinary();
-        // effectiveList();
-        newCollections();
+//         effectiveList();
+//        newCollections();
+        Hash();
+    }
+
+    public static void Hash() {
+        // 存储格式，大小，误报率(如果判断出来不存在则一定不存在，如果判断出来存在则有可能存在有可能不存在，因为其机制和hash非常相似存在多个值对一个hash的情况)
+        // 一般会根据订单号，如果不行的话可以使用byte数组
+        BloomFilter<Integer> bloomFilter = BloomFilter.create(Funnels.integerFunnel(), 2000, 0.0001);
+        IntStream.range(0, 10000).forEach(bloomFilter::put);
+        System.out.println(bloomFilter.mightContain(1));
+        // 只有-10、-7、-5、-2,而上面用2000个的长度存了一万个数据，有一定的误报率，当然你如果存10000个就会全都检测出来了，但也失去了布隆过滤的意义
+        IntStream.range(-10, 0).forEach(s -> {
+            if (!bloomFilter.mightContain(s)) {
+                System.out.println(s);
+            }
+        });
+
     }
 
     public static void newCollections(){
@@ -103,7 +115,6 @@ public class GuavaExample {
 //        sw.start("guavaGet");
 //        guava.get(0);
 //        sw.stop();
-
         sw.start("listFor");
         IntStream.range(0, 10000).boxed().forEach(list::get);
         sw.stop();
@@ -114,6 +125,10 @@ public class GuavaExample {
         IntStream.range(0, 10000).boxed().forEach(guava::get);
         sw.stop();
         System.out.println(sw.prettyPrint());
+
+        // 常规list转不可变,值得注意的是Collections.unmodifiableList()如果原list被改变不可变是会被改变的
+        list.remove(0);
+        // 即list和unmodifiableList都会少一个
     }
 
     public static void immutableOrdinary() {
@@ -130,7 +145,6 @@ public class GuavaExample {
         }
         Set<Integer> build = builder.build();
 
-        // 常规list转不可变,值得注意的是Collections.unmodifiableList()如果原list被改变不可变是会被改变的，guava的是深拷贝
         List<Integer> collect = Stream.of(1, 2, 3, 4).collect(Collectors.toList());
         List<Integer> integers = ImmutableList.copyOf(collect);
     }
