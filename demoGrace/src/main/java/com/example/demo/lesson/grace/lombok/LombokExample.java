@@ -17,7 +17,6 @@ import java.io.FileInputStream;
 @EqualsAndHashCode()
 @AllArgsConstructor
 @ToString(callSuper = true)
-@NoArgsConstructor
 @Builder
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 @Slf4j
