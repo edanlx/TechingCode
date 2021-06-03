@@ -88,18 +88,18 @@ public class TreeUtils {
      * @date 2021/3/1 8:18 下午
      */
     public static <F, T> List<F> listToTree(List<F> source, BiConsumer<F, List<F>> childListFn, Function<F, T> idFn, Function<F, T> pidFn, Predicate<F> getRootCondition) {
-        return listToTree(source, childListFn, idFn, pidFn, getRootCondition, null, null);
+        return listToTree(source, childListFn, idFn, pidFn, getRootCondition, null);
     }
 
     /**
-     * 复杂形式，进行listen回调
+     * 复杂形式，进行listen回调,用流式写法可以与外界交互
+     * (idx,obj)->{System.out.println(123);}
      *
      * @param listen 回调函数
-     * @param extra  回调额外传参
      * @author seal 876651109@qq.com
      * @date 2021/6/3 7:46 下午
      */
-    public static <F, T> List<F> listToTree(List<F> source, BiConsumer<F, List<F>> childListFn, Function<F, T> idFn, Function<F, T> pidFn, Predicate<F> getRootCondition, ListToTreeListen<F> listen, Object extra) {
+    public static <F, T> List<F> listToTree(List<F> source, BiConsumer<F, List<F>> childListFn, Function<F, T> idFn, Function<F, T> pidFn, Predicate<F> getRootCondition, BiConsumer<Integer, F> listen) {
         List<F> tree = new ArrayList<>();
         Map<T, List<F>> map = new HashMap<>();
         for (F f : source) {
@@ -111,33 +111,19 @@ public class TreeUtils {
                 map.put(pidFn.apply(f), tempList);
             }
         }
-        tree.forEach(l -> assembleTree(l, map, childListFn, idFn, listen, extra, 0));
+        tree.forEach(l -> assembleTree(l, map, childListFn, idFn, listen, 0));
         return tree;
     }
 
-    private static <F, T> void assembleTree(F current, Map<T, List<F>> map, BiConsumer<F, List<F>> childListFn, Function<F, T> idFn, ListToTreeListen<F> listen, Object extra, int idx) {
+    private static <F, T> void assembleTree(F current, Map<T, List<F>> map, BiConsumer<F, List<F>> childListFn, Function<F, T> idFn, BiConsumer<Integer, F> listen, int idx) {
         if (listen != null) {
-            listen.execute(idx, current, extra);
+            listen.accept(idx, current);
         }
         List<F> fs = map.get(idFn.apply(current));
         if (CollectionUtils.isEmpty(fs)) {
             return;
         }
         childListFn.accept(current, fs);
-        fs.forEach(l -> assembleTree(l, map, childListFn, idFn, listen, extra, idx + 1));
-    }
-
-    @FunctionalInterface
-    public interface ListToTreeListen<F> {
-        /**
-         * 树转平铺回调函数
-         *
-         * @param idx   层级，从0开始
-         * @param obj   对象
-         * @param extra 额外参数
-         * @author seal 876651109@qq.com
-         * @date 2021/6/3 7:55 下午
-         */
-        void execute(int idx, F obj, Object extra);
+        fs.forEach(l -> assembleTree(l, map, childListFn, idFn, listen, idx + 1));
     }
 }
