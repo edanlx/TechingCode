@@ -93,7 +93,7 @@ public class TreeUtils {
 
     /**
      * 复杂形式，进行listen回调,用流式写法可以与外界交互
-     * (idx,obj)->{System.out.println(123);}
+     * (idx,obj)->{System.out.println(123);},idx是从0开始的层级
      *
      * @param listen 回调函数
      * @author seal 876651109@qq.com
