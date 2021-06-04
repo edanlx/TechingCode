@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -64,15 +65,15 @@ public class TreeUtils {
      * @date 2021/3/1 8:19 下午
      */
     public static <F> void treeToListDeep(List<F> source, List<F> target, Function<F, List<F>> childListFn, Predicate<F> addTargetCondition) {
-        if (CollectionUtils.isEmpty(source)) {
-            return;
-        }
-        for (F f : source) {
-            if (addTargetCondition.test(f)) {
-                target.add(f);
+        loopTree(source, childListFn, (l) -> {
+            if (addTargetCondition.test(l)) {
+                target.add(l);
             }
-            treeToListDeep(childListFn.apply(f), target, childListFn, addTargetCondition);
-        }
+        });
+    }
+
+    public static <F> void treeToListDeep(List<F> source, Function<F, List<F>> childListFn, Predicate<F> addTargetCondition) {
+        treeToListDeep(source, new ArrayList<>(), childListFn, addTargetCondition);
     }
 
     /**
@@ -115,6 +116,9 @@ public class TreeUtils {
         return tree;
     }
 
+    /**
+     * 组装树
+     */
     private static <F, T> void assembleTree(F current, Map<T, List<F>> map, BiConsumer<F, List<F>> childListFn, Function<F, T> idFn, BiConsumer<Integer, F> listen, int idx) {
         if (listen != null) {
             listen.accept(idx, current);
@@ -125,5 +129,15 @@ public class TreeUtils {
         }
         childListFn.accept(current, fs);
         fs.forEach(l -> assembleTree(l, map, childListFn, idFn, listen, idx + 1));
+    }
+
+    public static <F> void loopTree(List<F> source, Function<F, List<F>> childListFn, Consumer<F> listen) {
+        if (CollectionUtils.isEmpty(source)) {
+            return;
+        }
+        source.forEach(l -> {
+            listen.accept(l);
+            loopTree(childListFn.apply(l), childListFn, listen);
+        });
     }
 }
