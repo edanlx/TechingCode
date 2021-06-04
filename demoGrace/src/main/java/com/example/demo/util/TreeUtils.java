@@ -102,7 +102,7 @@ public class TreeUtils {
      */
     public static <F, T> List<F> listToTree(List<F> source, BiConsumer<F, List<F>> childListFn, Function<F, T> idFn, Function<F, T> pidFn, Predicate<F> getRootCondition, BiConsumer<Integer, F> listen) {
         List<F> tree = new ArrayList<>();
-        Map<T, List<F>> map = new HashMap<>();
+        Map<T, List<F>> map = new HashMap<>(source.size());
         for (F f : source) {
             if (getRootCondition.test(f)) {
                 tree.add(f);
