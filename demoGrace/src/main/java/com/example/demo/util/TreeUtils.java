@@ -65,7 +65,7 @@ public class TreeUtils {
      * @date 2021/3/1 8:19 下午
      */
     public static <F> void treeToListDeep(List<F> source, List<F> target, Function<F, List<F>> childListFn, Predicate<F> addTargetCondition) {
-        loopTree(source, childListFn, (l) -> {
+        loopTreeSimple(source, childListFn, (l) -> {
             if (addTargetCondition.test(l)) {
                 target.add(l);
             }
@@ -131,13 +131,47 @@ public class TreeUtils {
         fs.forEach(l -> assembleTree(l, map, childListFn, idFn, listen, idx + 1));
     }
 
-    public static <F> void loopTree(List<F> source, Function<F, List<F>> childListFn, Consumer<F> listen) {
+    /**
+     * 树的简易递归,listen会回调当前对象
+     *
+     * @param source      源数据
+     * @param childListFn get方法
+     * @param listen      回调函数
+     * @author seal 876651109@qq.com
+     * @date 2021/6/5 16:47
+     */
+    public static <F> void loopTreeSimple(List<F> source, Function<F, List<F>> childListFn, Consumer<F> listen) {
         if (CollectionUtils.isEmpty(source)) {
             return;
         }
         source.forEach(l -> {
             listen.accept(l);
-            loopTree(childListFn.apply(l), childListFn, listen);
+            loopTreeSimple(childListFn.apply(l), childListFn, listen);
+        });
+    }
+
+    /**
+     * 树的复杂递归,listen会回调自身及往上的所有父级
+     *
+     * @param source      源数据
+     * @param childListFn get方法
+     * @param listen      回调函数
+     * @author seal 876651109@qq.com
+     * @date 2021/6/5 16:47
+     */
+    public static <F> void loopTree(List<F> source, Function<F, List<F>> childListFn, Consumer<List<F>> listen) {
+        loopTree(source, childListFn, listen, new ArrayList<>());
+    }
+
+    private static <F> void loopTree(List<F> source, Function<F, List<F>> childListFn, Consumer<List<F>> listen, List<F> loopList) {
+        if (CollectionUtils.isEmpty(source)) {
+            return;
+        }
+        source.forEach(l -> {
+            List<F> fs = new ArrayList<>(loopList);
+            fs.add(l);
+            listen.accept(fs);
+            loopTree(childListFn.apply(l), childListFn, listen, fs);
         });
     }
 }
