@@ -80,7 +80,7 @@ public class TreeUtils {
      * List<TestTreeObj> treeResult = listToTree(list, TestTreeObj::setTestTreeObj, TestTreeObj::getId, TestTreeObj::getPid, (l) -> l.getPid() == 0);
      *
      * @param source           源数据
-     * @param childListFn      设置递归的方法
+     * @param setChildListFn   设置递归的方法
      * @param idFn             获取id的方法
      * @param pidFn            获取父id的方法
      * @param getRootCondition 获取根节点的提哦啊见
@@ -88,8 +88,8 @@ public class TreeUtils {
      * @author 876651109@qq.com
      * @date 2021/3/1 8:18 下午
      */
-    public static <F, T> List<F> listToTree(List<F> source, BiConsumer<F, List<F>> childListFn, Function<F, T> idFn, Function<F, T> pidFn, Predicate<F> getRootCondition) {
-        return listToTree(source, childListFn, idFn, pidFn, getRootCondition, null);
+    public static <F, T> List<F> listToTree(List<F> source, BiConsumer<F, List<F>> setChildListFn, Function<F, T> idFn, Function<F, T> pidFn, Predicate<F> getRootCondition) {
+        return listToTree(source, setChildListFn, idFn, pidFn, getRootCondition, null);
     }
 
     /**
@@ -100,7 +100,7 @@ public class TreeUtils {
      * @author seal 876651109@qq.com
      * @date 2021/6/3 7:46 下午
      */
-    public static <F, T> List<F> listToTree(List<F> source, BiConsumer<F, List<F>> childListFn, Function<F, T> idFn, Function<F, T> pidFn, Predicate<F> getRootCondition, BiConsumer<Integer, F> listen) {
+    public static <F, T> List<F> listToTree(List<F> source, BiConsumer<F, List<F>> setChildListFn, Function<F, T> idFn, Function<F, T> pidFn, Predicate<F> getRootCondition, BiConsumer<Integer, F> listen) {
         List<F> tree = new ArrayList<>();
         Map<T, List<F>> map = new HashMap<>(source.size());
         for (F f : source) {
@@ -112,23 +112,22 @@ public class TreeUtils {
                 map.put(pidFn.apply(f), tempList);
             }
         }
-        tree.forEach(l -> assembleTree(l, map, childListFn, idFn, listen, 0));
+        tree.forEach(l -> assembleTree(l, map, setChildListFn, idFn, listen, 0));
         return tree;
     }
 
     /**
      * 组装树
      */
-    private static <F, T> void assembleTree(F current, Map<T, List<F>> map, BiConsumer<F, List<F>> childListFn, Function<F, T> idFn, BiConsumer<Integer, F> listen, int idx) {
+    private static <F, T> void assembleTree(F current, Map<T, List<F>> map, BiConsumer<F, List<F>> setChildListFn, Function<F, T> idFn, BiConsumer<Integer, F> listen, int idx) {
+        List<F> fs = map.get(idFn.apply(current));
+        setChildListFn.accept(current, fs);
+        if (CollectionUtils.isEmpty(fs)) {
+            fs.forEach(l -> assembleTree(l, map, setChildListFn, idFn, listen, idx + 1));
+        }
         if (listen != null) {
             listen.accept(idx, current);
         }
-        List<F> fs = map.get(idFn.apply(current));
-        if (CollectionUtils.isEmpty(fs)) {
-            return;
-        }
-        childListFn.accept(current, fs);
-        fs.forEach(l -> assembleTree(l, map, childListFn, idFn, listen, idx + 1));
     }
 
     /**
