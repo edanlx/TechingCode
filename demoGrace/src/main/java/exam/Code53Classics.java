@@ -7,7 +7,7 @@ public class Code53Classics {
     }
 
     /**
-     * 从左到右相加如果小于零则整体丢弃，但最大值已然保留
+     * 从左到右相加如果小于零则整体丢弃，但最大值已然保留，动态规划
      *
      * @param nums
      * @return
@@ -27,7 +27,7 @@ public class Code53Classics {
     }
 
     /**
-     * 进阶，求任意子线段最大和
+     * 进阶，求任意子线段最大和,分治
      *
      * @param nums
      * @return
