@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -65,7 +66,7 @@ public class TreeUtils {
      * @date 2021/3/1 8:19 下午
      */
     public static <F> void treeToListDeep(List<F> source, List<F> target, Function<F, List<F>> childListFn, Predicate<F> addTargetCondition) {
-        loopTreeSimple(source, childListFn, (l) -> {
+        loopTree(source, childListFn, (l) -> {
             if (addTargetCondition.test(l)) {
                 target.add(l);
             }
@@ -139,38 +140,18 @@ public class TreeUtils {
      * @author seal 876651109@qq.com
      * @date 2021/6/5 16:47
      */
-    public static <F> void loopTreeSimple(List<F> source, Function<F, List<F>> childListFn, Consumer<F> listen) {
+    public static <F> void loopTree(List<F> source, Function<F, List<F>> childListFn, Consumer<F> listen) {
+        loopTree(source, childListFn, listen, null);
+    }
+
+    public static <F> void loopTree(List<F> source, Function<F, List<F>> childListFn, Consumer<F> preListen, Consumer<F> postFun) {
         if (CollectionUtils.isEmpty(source)) {
             return;
         }
         source.forEach(l -> {
-            listen.accept(l);
-            loopTreeSimple(childListFn.apply(l), childListFn, listen);
-        });
-    }
-
-    /**
-     * 树的复杂递归,listen会回调自身及往上的所有父级
-     *
-     * @param source      源数据
-     * @param childListFn get方法
-     * @param listen      回调函数
-     * @author seal 876651109@qq.com
-     * @date 2021/6/5 16:47
-     */
-    public static <F> void loopTree(List<F> source, Function<F, List<F>> childListFn, Consumer<List<F>> listen) {
-        loopTree(source, childListFn, listen, new ArrayList<>());
-    }
-
-    private static <F> void loopTree(List<F> source, Function<F, List<F>> childListFn, Consumer<List<F>> listen, List<F> loopList) {
-        if (CollectionUtils.isEmpty(source)) {
-            return;
-        }
-        source.forEach(l -> {
-            List<F> fs = new ArrayList<>(loopList);
-            fs.add(l);
-            listen.accept(fs);
-            loopTree(childListFn.apply(l), childListFn, listen, fs);
+            Optional.ofNullable(preListen).ifPresent(s -> s.accept(l));
+            loopTree(childListFn.apply(l), childListFn, preListen, postFun);
+            Optional.ofNullable(postFun).ifPresent(s -> s.accept(l));
         });
     }
 }
