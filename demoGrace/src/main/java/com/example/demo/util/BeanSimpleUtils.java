@@ -2,6 +2,7 @@ package com.example.demo.util;
 
 import com.example.demo.lesson.grace.serialize.KryoUtils;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.cglib.beans.BeanCopier;
@@ -27,6 +28,12 @@ public class BeanSimpleUtils {
     public static <T> List<T> beanListToImmutable(List<T> bean) {
         ImmutableList.Builder<T> builder = ImmutableList.builder();
         bean.forEach(s -> builder.add(beanToImmutable(s)));
+        return builder.build();
+    }
+
+    public static <T> Map<String, T> beanMapToImmutable(Map<String, T> bean) {
+        ImmutableMap.Builder<String, T> builder = ImmutableMap.builder();
+        bean.forEach((k, v) -> builder.put(k, beanToImmutable(v)));
         return builder.build();
     }
 
