@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -153,5 +154,47 @@ public class TreeUtils {
             loopTree(childListFn.apply(l), childListFn, preListen, postFun);
             Optional.ofNullable(postFun).ifPresent(s -> s.accept(l));
         });
+    }
+
+    public static <T, K> List<T> buildTree(List<T> dataList, int index, Map<K, T> dataMap,
+                                            Function<T, K> idFn,
+                                            Function<T, K> pIdFn,
+                                            Function<T, List<T>> getChildFn,
+                                            BiConsumer<T, List<T>> setChildFn,
+                                            Predicate<K> predicate) {
+        List<T> resultList = new ArrayList<>(dataList.size());
+        while (index < dataList.size()) {
+            T item = dataList.get(index);
+            dataMap.put(idFn.apply(item), item);
+            K pId = pIdFn.apply(item);
+            if (predicate.test(pId)) {
+                resultList.add(item);
+            } else {
+                T parent = dataMap.get(pId);
+                //为null表示还没被循环到父级,则递归，再次循环剩下的部分
+                if (Objects.isNull(parent)) {
+                    index += 1;
+                    List<T> list = buildTree(dataList, index, dataMap, idFn, pIdFn, getChildFn, setChildFn, predicate);
+                    parent = dataMap.get(pId);
+                    //  如果为null 表示列表没有父级，自动升级为顶节点
+                    if (Objects.isNull(parent)) {
+                        resultList.add(item);
+                    } else {
+                        List<T> childList = Optional.ofNullable(getChildFn.apply(parent)).orElse(new ArrayList<>());
+                        childList.add(item);
+                        setChildFn.accept(parent, childList);
+                    }
+                    if (list.size() != 0) {
+                        resultList.addAll(list);
+                    }
+                } else {
+                    List<T> childList = Optional.ofNullable(getChildFn.apply(parent)).orElse(new ArrayList<>());
+                    childList.add(item);
+                    setChildFn.accept(parent, childList);
+                }
+            }
+            index += 1;
+        }
+        return resultList;
     }
 }
