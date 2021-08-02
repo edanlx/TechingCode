@@ -4,13 +4,19 @@ import com.example.demo.lesson.grace.serialize.KryoUtils;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
-import org.apache.commons.lang3.ObjectUtils;
+import lombok.SneakyThrows;
 import org.springframework.cglib.beans.BeanCopier;
 import org.springframework.cglib.beans.BeanMap;
 import org.springframework.cglib.beans.ImmutableBean;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.ReflectionUtils;
 
+import java.beans.BeanInfo;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
 import java.io.Serializable;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
@@ -22,7 +28,15 @@ public class BeanSimpleUtils {
     private final static Gson GSON_OBJECT = new Gson();
 
     public static <T> T beanToImmutable(T bean) {
-        return (T) ImmutableBean.create(bean);
+        T result = (T) ImmutableBean.create(bean);
+        Field[] declaredFields = bean.getClass().getDeclaredFields();
+        for (Field declaredField : declaredFields) {
+            if (Modifier.isStatic(declaredField.getModifiers())) {
+                ReflectionUtils.makeAccessible(declaredField);
+                ReflectionUtils.setField(declaredField, result, ReflectionUtils.getField(declaredField, bean));
+            }
+        }
+        return result;
     }
 
     public static <T> List<T> beanListToImmutable(List<T> bean) {
@@ -68,10 +82,17 @@ public class BeanSimpleUtils {
         return source.stream().map(s -> beanCopy(s, clazz)).collect(Collectors.toList());
     }
 
+    @SneakyThrows
     public static <T, U> U beanMerge(T sourceBean, U targetBean) {
-        BeanCopier copier = BeanCopier.create(sourceBean.getClass(), targetBean.getClass(), true);
-        copier.copy(sourceBean, targetBean, null);
-        copier.copy(sourceBean, targetBean, (source, aClass, target) -> ObjectUtils.defaultIfNull(source, target));
+        BeanInfo beanInfo = Introspector.getBeanInfo(targetBean.getClass());
+        for (PropertyDescriptor descriptor : beanInfo.getPropertyDescriptors()) {
+            if (descriptor.getWriteMethod() != null) {
+                Object defaultValue = descriptor.getReadMethod().invoke(sourceBean);
+                if (defaultValue != null) {
+                    descriptor.getWriteMethod().invoke(targetBean, defaultValue);
+                }
+            }
+        }
         return targetBean;
     }
 
