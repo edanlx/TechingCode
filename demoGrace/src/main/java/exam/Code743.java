@@ -2,13 +2,13 @@ package exam;
 
 import java.util.Arrays;
 
-class Solution {
+public class Code743 {
     /**
      * 最短距离经典示例
      * @param args
      */
     public static void main(String[] args) {
-        new Solution().networkDelayTime(new int[][]{{2, 1, 1}, {2, 3, 1}, {3, 4, 1}}, 4, 2);
+        new Code743().networkDelayTime(new int[][]{{2, 1, 1}, {2, 3, 1}, {3, 4, 1}}, 4, 2);
     }
 
     public int networkDelayTime(int[][] times, int n, int k) {
