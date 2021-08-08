@@ -26,7 +26,7 @@ public class Code847 {
         // 节点编号及当前状态
         boolean[][] seen = new boolean[n][1 << n];
         for (int i = 0; i < n; ++i) {
-            // 三个属性分别为 idx, mask, dist(其实距离为0)
+            // 三个属性分别为 idx, mask, dist(起始距离为0)
             queue.offer(new int[]{i, 1 << i, 0});
             seen[i][1 << i] = true;
         }
