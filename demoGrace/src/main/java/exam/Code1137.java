@@ -2,8 +2,8 @@ package exam;
 
 public class Code1137 {
     public static void main(String[] args) {
-        System.out.println(new Code1137().power(2, 4));
-        // System.out.println(new Code1137().tribonacci(4));
+//        System.out.println(new Code1137().power(2, 4));
+         System.out.println(new Code1137().tribonacci(4));
     }
 
     /**
