@@ -2,18 +2,20 @@ package exam;
 
 public class Code1137 {
     public static void main(String[] args) {
-        System.out.println(new Code1137().tribonacci(4));
+        System.out.println(new Code1137().power(2, 4));
+        // System.out.println(new Code1137().tribonacci(4));
     }
 
     /**
      * 先导知识快速幂模板算法
      * a^n
+     * 例如2^8=2^4*2^4,进行二分计算
+     *
      * @param a
      * @param n
      * @return
      */
-    int power(int a, int n)
-    {
+    int power(int a, int n) {
         int ans = 1;
         while (n > 0) {
             //当n为奇数时，乘以余下的一个a
