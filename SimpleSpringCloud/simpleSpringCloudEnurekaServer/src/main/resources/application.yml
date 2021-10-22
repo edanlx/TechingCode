@@ -1,0 +1,11 @@
+eureka:
+  client:
+    #是否从Eureka-Server中获取服务注册信息，默认为true
+    fetchRegistry: false
+    #是否将自己注册到Eureka-Server中，默认的为true
+    registerWithEureka: false
+server:
+  port: 8761
+spring:
+  application:
+    name: eureka-server

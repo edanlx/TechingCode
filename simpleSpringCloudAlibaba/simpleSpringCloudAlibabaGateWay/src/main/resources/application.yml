@@ -1,0 +1,23 @@
+server:
+  port: 8083
+
+spring:
+  application:
+    name: gateway-web
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 192.168.200.129:8848
+    sentinel:
+      transport:
+        dashboard: 192.168.200.129:8858
+        port: 8858
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          ##开启自动发现
+          #网关访问http://localhost:8083/consumer/order/echo/123
+          #api分组精确：consumer/order4/hello，前缀：/consumer/order4/**
+          #https://blog.csdn.net/qq_31155349/article/details/108542536 持久化方式/或者使用json文件配置方式
+          #https://www.pianshen.com/article/44641395129/

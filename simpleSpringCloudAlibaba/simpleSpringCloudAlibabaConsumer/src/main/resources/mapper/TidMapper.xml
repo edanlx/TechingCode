@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.test.dao.TidMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.test.bean.Tid">
+        <result column="id1" property="id1" />
+        <result column="id2" property="id2" />
+        <result column="id3" property="id3" />
+    </resultMap>
+
+    <insert id="executeTestSql">
+        INSERT INTO test.t_id_p(id1, id2, id3) VALUES ('3', '3', '3');
+    </insert>
+</mapper>
