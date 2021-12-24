@@ -22,6 +22,9 @@ public class Reflections {
     private Reflections() {
     }
 
+    /**
+     * 通过get方法获得字段名
+     */
     public static <F, T> String fnToFieldName(IFn<F, T> fn) {
         SerializedLambda serializedLambda = getSerializedLambda(fn);
         String getter = serializedLambda.getImplMethodName();
@@ -32,10 +35,16 @@ public class Reflections {
         return fieldName;
     }
 
+    /**
+     * 通过get方法获得方法名
+     */
     public static <F, T> String fnToFnName(IFn<F, T> fn) {
         return getSerializedLambda(fn).getImplMethodName();
     }
 
+    /**
+     * 通过get方法获得method对象
+     */
     public static <F, T> Method fnToMethod(IFn<F, T> fn) {
         SerializedLambda serializedLambda = getSerializedLambda(fn);
         Method method = null;
@@ -47,6 +56,9 @@ public class Reflections {
         return method;
     }
 
+    /**
+     * 通过get方法获得Field对象
+     */
     public static <F, T> Field fnToField(IFn<F, T> fn) {
         SerializedLambda serializedLambda = getSerializedLambda(fn);
         String fieldName = "";
@@ -65,6 +77,9 @@ public class Reflections {
         return field;
     }
 
+    /**
+     * 通过set方法获得字段名
+     */
     public static <F, T> String fnToFieldNameVoid(IFnVoid<F, T> fn) {
         SerializedLambda serializedLambda = getSerializedLambda(fn);
         String getter = serializedLambda.getImplMethodName();

@@ -1,8 +1,11 @@
 package com.example.demo.lesson.grace.reflect;
 
-import com.example.demo.bean.TestMultObject;
-import com.example.demo.bean.TestMultObjectChild;
-import com.example.demo.bean.TestMultObjectParent;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ReflectionUtils;
 
@@ -14,8 +17,41 @@ import java.util.stream.Stream;
 
 public class MultiList {
 
+    @Data
+    @AllArgsConstructor
+    @ToString(callSuper = true)
+    @NoArgsConstructor
+    @Builder
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    public static class TestMultObjectParent {
+        private List<TestMultObject> list;
+    }
+
+    @Data
+    @AllArgsConstructor
+    @ToString(callSuper = true)
+    @NoArgsConstructor
+    @Builder
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    public static class TestMultObject {
+        private List<TestMultObjectChild> list;
+    }
+
+    @Data
+    @AllArgsConstructor
+    @ToString(callSuper = true)
+    @NoArgsConstructor
+    @Builder
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    public static class TestMultObjectChild {
+        private int id;
+    }
+
     public static class Handle {
-        public static void handle(TestMultObjectParent obj1, TestMultObject obj2, TestMultObjectChild obj3,String a,int b) {
+        /**
+         * 按照树结构和传参要求自行创建
+         */
+        public static void handle(TestMultObjectParent obj1, TestMultObject obj2, TestMultObjectChild obj3, String a, int b) {
             System.out.println(obj3);
         }
     }
@@ -54,6 +90,7 @@ public class MultiList {
             }}).build());
         }};
         List<Method> methodList = new ArrayList<Method>() {{
+            // 这个是18节介绍过自己封装的工具类，方法返回method对象
             add(Reflections.fnToMethod(TestMultObjectParent::getList));
             add(Reflections.fnToMethod(TestMultObject::getList));
         }};
@@ -61,10 +98,16 @@ public class MultiList {
             add("1");
             add(1);
         }};
-        handleMultiList(data, methodList, Handle.class, new MultiList(),extend);
-        System.out.println();
+        handleMultiList(data, methodList, Handle.class, null, extend);
     }
 
+    /**
+     * @param data       数据
+     * @param methodList 按顺序封装每一层获取下一层子集的方式
+     * @param clazz      最终回调的类需要按固定格式写唯一一个方法用于回调，前N个参数分别是每一层的对象，最后传入extend扩展对象
+     * @param obj        反射方法执行对象，用不上但需要传
+     * @param extend     需要参与底层调用的参数,可以将需要的返回值传入等等操作
+     */
     public static void handleMultiList(List data, List<Method> methodList, Class clazz, Object obj, List extend) {
         Method invoke = clazz.getMethods()[0];
         List<List> objects = new ArrayList<>();
@@ -76,7 +119,7 @@ public class MultiList {
         }
     }
 
-    public static List<Integer> handleMultiList(List data, List<Method> methodList, int step, List<List> result) {
+    private static List<Integer> handleMultiList(List data, List<Method> methodList, int step, List<List> result) {
         List<Integer> intList = new ArrayList<>();
         if (CollectionUtils.isEmpty(data)) {
             return intList;

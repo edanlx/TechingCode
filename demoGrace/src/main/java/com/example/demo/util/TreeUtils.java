@@ -156,12 +156,17 @@ public class TreeUtils {
         });
     }
 
+    /**
+     * 与listToTree功能一致，但是前方法循环两次，该方法利用递归只循环一次，用空间换时间的方式
+     *
+     * @return
+     */
     public static <T, K> List<T> buildTree(List<T> dataList, int index, Map<K, T> dataMap,
-                                            Function<T, K> idFn,
-                                            Function<T, K> pIdFn,
-                                            Function<T, List<T>> getChildFn,
-                                            BiConsumer<T, List<T>> setChildFn,
-                                            Predicate<K> predicate) {
+                                           Function<T, K> idFn,
+                                           Function<T, K> pIdFn,
+                                           Function<T, List<T>> getChildFn,
+                                           BiConsumer<T, List<T>> setChildFn,
+                                           Predicate<K> predicate) {
         List<T> resultList = new ArrayList<>(dataList.size());
         while (index < dataList.size()) {
             T item = dataList.get(index);
