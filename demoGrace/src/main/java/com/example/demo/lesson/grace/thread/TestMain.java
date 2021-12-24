@@ -8,7 +8,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 /**
  * description
@@ -24,11 +23,12 @@ public class TestMain {
 //            return l;
 //        }).collect(Collectors.toList()));
         threadEx2();
+//        threadEx1();
     }
 
     public static void threadEx1() {
         // 同步
-        List<ThreadEntity> listEntity = IntStream.range(0, 1000).mapToObj(x -> new ThreadEntity(x)).collect(Collectors.toList());
+        List<ThreadEntity> listEntity = IntStream.range(0, 10).mapToObj(x -> ThreadEntity.builder().num(x).build()).collect(Collectors.toList());
         List<CompletableFuture<Integer>> listCompletableFuture = listEntity.stream().map(x -> {
             try {
                 return CompletableFuture.supplyAsync(() -> x.countPrice(),
@@ -41,13 +41,14 @@ public class TestMain {
         }).collect(Collectors.toList());
         List<Integer> result = listCompletableFuture.stream().map(CompletableFuture::join).collect(Collectors.toList());
         System.out.println(result);
+        System.out.println(listEntity);
     }
 
     @SneakyThrows(InterruptedException.class)
     public static void threadEx2() {
         // 异步
 
-        List<ThreadEntity> listEntity = IntStream.range(0, 10).mapToObj(x -> new ThreadEntity(x)).collect(Collectors.toList());
+        List<ThreadEntity> listEntity = IntStream.range(0, 10).mapToObj(x -> ThreadEntity.builder().num(x).build()).collect(Collectors.toList());
         List<CompletableFuture> listCompletableFuture = listEntity.stream().map(x -> {
             try {
                 return CompletableFuture.runAsync(() -> x.countPrice(), ThreadPoolManager.getInstance().getPool());
@@ -58,6 +59,7 @@ public class TestMain {
         }).collect(Collectors.toList());
         listCompletableFuture.stream().map(CompletableFuture::join);
         System.out.println("1234");
+        CompletableFuture.runAsync(() -> System.out.println(1));
         while (true) {
             Thread.sleep(1000);
         }
