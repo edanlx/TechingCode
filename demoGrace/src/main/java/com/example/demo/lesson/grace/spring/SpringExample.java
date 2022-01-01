@@ -1,8 +1,11 @@
 package com.example.demo.lesson.grace.spring;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.*;
-import org.apache.commons.lang3.ObjectUtils;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.apache.commons.text.StringEscapeUtils;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.cglib.beans.BeanCopier;
@@ -12,20 +15,17 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.core.io.support.LocalizedResourceHelper;
 import org.springframework.lang.Nullable;
+import org.springframework.util.Assert;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.ResourceUtils;
 import org.springframework.util.StopWatch;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.util.UriUtils;
-import org.springframework.web.util.WebUtils;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -41,8 +41,10 @@ public class SpringExample {
     private static ApplicationContext ac;
 
     public static void main(String[] args) {
-        // reflectionExample();
-        cglibExample();
+//         reflectionExample();
+//        cglibExample();
+//        springExample();
+        assertExample();
     }
 
     @Nullable
@@ -65,7 +67,7 @@ public class SpringExample {
         bean.setTestName("hello");
         SpringExample immutableBean = (SpringExample) ImmutableBean.create(bean);
         // 下面这步会直接报错
-        // immutableBean.setTestName("123");
+//         immutableBean.setTestName("123");
 
         // 对象复制，目前最快的复制,第一个source,第二个atrget,如果要复制list需要自行循环
         BeanCopier copier = BeanCopier.create(SpringExample.class, SpringExample.class, false);
@@ -76,15 +78,6 @@ public class SpringExample {
         copier.copy(sourceBean, targetBean, null);
         System.out.println(targetBean);
         // 注意第一步可以static缓存起来，BulkBean虽然可以处理复杂逻辑，但是个人认为复杂逻辑就老实写代码实现，用这个反而累赘
-
-        // 使用转换器实现属性合并，也是相当给力
-        BeanCopier copier2 = BeanCopier.create(SpringExample.class, SpringExample.class, true);
-        SpringExample sourceBean2 = new SpringExample();
-        SpringExample targetBean2 = new SpringExample();
-        targetBean2.setTestName("223");
-        copier2.copy(sourceBean2, targetBean2, (source, aClass, target) -> ObjectUtils.defaultIfNull(source, target));
-        System.out.println(sourceBean2);
-        System.out.println(targetBean2);
 
         // 对象转map，可以重新封装，也可以直接用
         Map<String, Object> map = new HashMap<>();
@@ -101,9 +94,9 @@ public class SpringExample {
 
     private static void springExample() {
         // 获取request
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+//        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         // 获取cookie
-        Cookie cookie = WebUtils.getCookie(request, "hello");
+//        Cookie cookie = WebUtils.getCookie(request, "hello");
         // 转义url
         UriUtils.decode("", StandardCharsets.UTF_8);
         UriUtils.encode("", StandardCharsets.UTF_8);
@@ -123,6 +116,10 @@ public class SpringExample {
         Map<String, SpringExample> beansOfType = ac.getBeansOfType(SpringExample.class);
         // 获取当前代理对象，service层常用
         AopContext.currentProxy();
+    }
+
+    private static void assertExample() {
+        Assert.notEmpty(new ArrayList<>());
     }
 
     private void otherExample(){

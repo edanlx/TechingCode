@@ -72,7 +72,7 @@ public class CollectionExample {
         //只用这个比较好用
         CollectionUtils.isEmpty(list2);
 
-        //这个也还凑合 防止各种NPE
+        //此处对比java自带的工具包
         Collections.emptyList();
         Collections.emptyMap();
         Collections.emptySet();
