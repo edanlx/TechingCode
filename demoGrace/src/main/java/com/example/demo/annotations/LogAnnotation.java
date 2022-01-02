@@ -13,8 +13,20 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface LogAnnotation {
+    /**
+     * 运行时长
+     */
     boolean totalConsume() default true;
+    /**
+     * 请求参数
+     */
     boolean parameter() default false;
+    /**
+     * 返回值
+     */
     boolean result() default false;
+    /**
+     * 异常时打印请求参数
+     */
     boolean exception() default true;
 }

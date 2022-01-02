@@ -1,6 +1,9 @@
 package com.example.demo.lesson.grace.stream;
 
-import com.example.demo.bean.TestEnum;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -12,6 +15,27 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class StreamExample {
+
+    @Getter
+    @AllArgsConstructor
+    @ToString(callSuper = true)
+    @NoArgsConstructor
+    public enum TestEnum {
+        /**
+         * excel
+         */
+        EXCEL(1, "excel"),
+        PPT(2, "ppt"),
+        ;
+        /**
+         * 编码
+         */
+        private int code;
+        /**
+         * 描述
+         */
+        private String desc;
+    }
     public static void main(String[] args) {
         ordinaryUsed();
     }
@@ -52,7 +76,7 @@ public class StreamExample {
         System.out.println("Step8");
         IntStream.range(0, list.size()).forEach(x -> System.out.print(list.get(x)));
         System.out.println();
-        // list对象-转map，注意key不能相同，否则会报错
+        // list对象-转map，注意key不能相同，否则会报错，应采用Collectors.toMap(dto->key值,dto->dto,(v1,v2)->v1)
         System.out.println("Step9");
         System.out.println(Stream.of(TestEnum.values()).collect(Collectors.toMap(TestEnum::getCode, s -> s)));
         System.out.println("Step10");

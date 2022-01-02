@@ -1,5 +1,7 @@
 package com.example.demo.lesson.grace.stream;
 
+import com.alibaba.fastjson.JSON;
+
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -18,36 +20,61 @@ import java.util.function.Supplier;
  * @date 2021/2/10 9:25 上午
  */
 public class Delay {
-    public static <T> T showLog(int level, Supplier<T> method) {
-        // 日志级别等于1的时候执行，实际场景为从redis获取数据为空时执行刷新缓存并返回
-        if (level == 1) {
-            return method.get();
+    /**
+     * @param redisKey redisKey
+     * @param method   调用数据库方法
+     * @param <T>
+     * @return
+     */
+    public static <T> T getFromRedisAndRefresh(String redisKey, Supplier<T> method) {
+        // 模拟从redis获取数据
+        T redisData = getKey(redisKey);
+        if (redisData != null) {
+            System.out.println("redis hit");
+            return redisData;
         } else {
-            return null;
+            System.out.println("redis not hit");
+            // 执行查询数据库
+            T data = method.get();
+            System.out.println("redis refresh");
+            return data;
         }
     }
 
-    public static void showLog2(int level, Consumer method) {
-        // 日志街边等于3的时候输出日志
-        if (level == 3) {
-            method.accept(level);
+    private static <T> T getKey(String redisKey) {
+        if (redisKey.equals("1")) {
+            return (T) new Integer(0);
+        }
+        return null;
+    }
+
+    public static void showLog(int level, Consumer method) {
+        // 日志级别等于3的时候输出日志同时执行计算，避免了传统的先计算再判断
+        if (level >= 4) {
+            method.accept(String.format("current level is %s", JSON.toJSONString(level)));
         }
     }
 
     public static void main(String[] args) throws InterruptedException {
         // 输出
-        showLog(1, () -> {
-            System.out.println(1);
-            return 1;
+        int data1 = 1;
+        getFromRedisAndRefresh("1", () -> {
+            // 从数据库拿到1
+            System.out.println("get From database" + data1);
+            return data1;
         });
         // 不输出
-        showLog(2, () -> {
-            System.out.println(2);
-            return 1;
+        int data2 = 2;
+        getFromRedisAndRefresh("2", () -> {
+            // 从数据库拿到2
+            System.out.println("get From database" + data2);
+            return data2;
         });
+
+
+        // 不输出
+        showLog(3, System.out::println);
         // 输出
-        showLog2(3, System.out::println);
-        // 不输出
-        showLog2(4, System.out::println);
+        showLog(4, System.out::println);
     }
 }
