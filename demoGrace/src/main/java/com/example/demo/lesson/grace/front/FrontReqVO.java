@@ -31,10 +31,11 @@ public class FrontReqVO {
     @Size(min = 1)
     private String name2;
     // 如果加了其它分组要把default带上，不然会覆盖
+    // 校验去除空格后不可为空
     @TrimNotNull(groups = {Default.class, Insert.class})
-    // 序列化
+    // 序列化,去除空格
     @JsonSerialize(using = TrimNotNullJson.class)
-    // 反序列化
+    // 反序列化，去除空格
     @JsonDeserialize(using = TrimNotNullDeJson.class)
     private String name3;
     @Pattern(regexp = "^[Y|N]$")

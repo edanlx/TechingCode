@@ -39,6 +39,11 @@ import java.util.Map;
 @Slf4j
 public class HttpUtil {
 
+    /**
+     * 发送get方法已改造成使用连接池
+     * @param url
+     * @return
+     */
     public static String sendGet(String url) {
         HttpGet httpGet = new HttpGet(url);
         httpGet.setConfig(RequestConfig.custom()
@@ -70,6 +75,11 @@ public class HttpUtil {
         return "";
     }
 
+    /**
+     * 发送post方法
+     * @param url
+     * @return
+     */
     public static String sendPost(String url, Map<String, String> paramsMap, Map<String, String> headMap) {
         List<NameValuePair> formParams = new ArrayList<>();
         if (MapUtils.isNotEmpty(paramsMap)) {
@@ -104,6 +114,11 @@ public class HttpUtil {
         return "";
     }
 
+    /**
+     * 发送postJson
+     * @param url
+     * @return
+     */
     public static String sendPostJson(String url, String param, Map<String, String> headMap) {
         StringEntity entity = new StringEntity(param, "utf-8");
         entity.setContentType(MediaType.APPLICATION_JSON_VALUE);
@@ -165,12 +180,12 @@ public class HttpUtil {
         String url = "http://www.baidu.com";
         StopWatch stopWatch = new StopWatch();
         stopWatch.start("pool");
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 1000; i++) {
             sendGet(url);
         }
         stopWatch.stop();
         stopWatch.start("common");
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 1000; i++) {
             HttpGet httpGet = new HttpGet(url);
             httpGet.setConfig(RequestConfig.custom()
                     .setConnectTimeout(3000)

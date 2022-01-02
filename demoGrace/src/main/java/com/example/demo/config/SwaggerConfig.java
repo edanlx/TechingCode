@@ -1,6 +1,5 @@
 package com.example.demo.config;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import springfox.documentation.builders.ApiInfoBuilder;
@@ -17,18 +16,15 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
  */
 @Configuration
 @EnableSwagger2
+//@ConditionalOnProperty(name = "swagger.enable", havingValue = "true")
 public class SwaggerConfig {
     //http://localhost:8081/swagger-ui.html
     //http://localhost:8081/doc.html
-
-    @Value("${swagger.enable:true}")
-    private boolean enable;
 
     @Bean
     public Docket createRestApi() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .groupName("微服务接口调用文档")
-                .enable(enable)
                 .pathMapping("/")
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("com.example.demo"))
@@ -41,4 +37,5 @@ public class SwaggerConfig {
                         .licenseUrl("http://www.baidu.com")
                         .build());
     }
+
 }

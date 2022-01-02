@@ -228,6 +228,8 @@ public enum ErrorCodeEnum implements Ifront<ErrorCodeEnum> {
 
     public static final Map<String, ErrorCodeEnum> MAPS = Stream.of(ErrorCodeEnum.values()).collect(Collectors.toMap(ErrorCodeEnum::getCode, s -> s));
 
+    public static final Map<String, ErrorCodeEnum> MAPzh = Stream.of(ErrorCodeEnum.values()).collect(Collectors.toMap(ErrorCodeEnum::getZhCn, s -> s));
+
     @Override
     public Map<String, ErrorCodeEnum> getMap() {
         return MAPS;
