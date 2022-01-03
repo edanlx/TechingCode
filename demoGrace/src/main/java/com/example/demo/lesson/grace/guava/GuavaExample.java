@@ -30,12 +30,12 @@ import java.util.stream.Stream;
 
 public class GuavaExample {
     public static void main(String[] args) {
-        // immutableOrdinary();
-//         effectiveList();
+//         immutableOrdinary();
+//        effectiveList();
 //        newCollections();
 //        hash();
 //        collections();
-//        eventBus();
+        eventBus();
 //        rate();
 //        cache();
     }
@@ -160,42 +160,49 @@ public class GuavaExample {
 
     public static void effectiveList() {
         StopWatch sw = new StopWatch();
-        // sw.start("listAdd");
+        sw.start("listAdd");
         Stream.Builder<Integer> builder1 = Stream.builder();
         for (int i = 0; i < 10000; i++) {
             builder1.add(i);
         }
         List<Integer> list = builder1.build().collect(Collectors.toList());
-        // sw.stop();
+        sw.stop();
 
-        // sw.start("ImmutableListAdd");
+        sw.start("ImmutableListAdd");
         ImmutableList.Builder<Integer> builder = ImmutableList.builder();
         for (int i = 0; i < 10000; i++) {
             builder.add(i);
         }
         List<Integer> guava = builder.build();
-        // sw.stop();
-
-        List<Integer> listUn = Collections.unmodifiableList(list);
-//        sw.start("listGet");
-//        list.get(0);
-//        sw.stop();
-//        sw.start("listUnGet");
-//        listUn.get(0);
-//        sw.stop();
-//        sw.start("guavaGet");
-//        guava.get(0);
-//        sw.stop();
-        sw.start("listFor");
-        IntStream.range(0, 10000).boxed().forEach(list::get);
-        sw.stop();
-        sw.start("listUnFor");
-        IntStream.range(0, 10000).boxed().forEach(listUn::get);
-        sw.stop();
-        sw.start("guavaFor");
-        IntStream.range(0, 10000).boxed().forEach(guava::get);
         sw.stop();
         System.out.println(sw.prettyPrint());
+
+        StopWatch sw2 = new StopWatch();
+
+        List<Integer> listUn = Collections.unmodifiableList(list);
+        sw2.start("listGet");
+        list.get(0);
+        sw2.stop();
+        sw2.start("listUnGet");
+        listUn.get(0);
+        sw2.stop();
+        sw2.start("guavaGet");
+        guava.get(0);
+        sw2.stop();
+        System.out.println(sw2.prettyPrint());
+
+
+        StopWatch sw3 = new StopWatch();
+        sw3.start("listFor");
+        IntStream.range(0, 10000).boxed().forEach(list::get);
+        sw3.stop();
+        sw3.start("listUnFor");
+        IntStream.range(0, 10000).boxed().forEach(listUn::get);
+        sw3.stop();
+        sw3.start("guavaFor");
+        IntStream.range(0, 10000).boxed().forEach(guava::get);
+        sw3.stop();
+        System.out.println(sw3.prettyPrint());
 
         // 常规list转不可变,值得注意的是Collections.unmodifiableList()如果原list被改变不可变是会被改变的
         list.remove(0);
@@ -230,29 +237,5 @@ public class GuavaExample {
         }
     }
 
-    @SneakyThrows
-    public static void cache() {
-        // 注意两个如果一起用有时候会有bug
-        Cache<Integer, Integer> accessBuild = CacheBuilder.newBuilder().expireAfterAccess(1, TimeUnit.SECONDS).build();
-        Cache<Integer, Integer> writeBuild = CacheBuilder.newBuilder().expireAfterWrite(1, TimeUnit.SECONDS).build();
 
-        accessBuild.put(1, 1);
-        accessBuild.put(2, 2);
-        writeBuild.put(1, 1);
-        writeBuild.put(2, 2);
-        // 输出1
-        System.out.println(accessBuild.getIfPresent(1));
-        // 输出1
-        System.out.println(writeBuild.getIfPresent(1));
-        Thread.sleep(500);
-        // 输出2
-        System.out.println(accessBuild.getIfPresent(2));
-        Thread.sleep(600);
-        // 输出null
-        System.out.println(accessBuild.getIfPresent(1));
-        // 输出2
-        System.out.println(accessBuild.getIfPresent(2));
-        // 输出null
-        System.out.println(writeBuild.getIfPresent(1));
-    }
 }

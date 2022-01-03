@@ -24,7 +24,7 @@ public class SerializeExample {
     }
 
     public static void main(String[] args) throws JsonProcessingException {
-        // compareLength();
+//         compareLength();
 //        compareSerialize();
          compareDeSerialize();
     }
@@ -129,19 +129,19 @@ public class SerializeExample {
         serializeTestObject.name = "1";
         byte[] serialize = SerializationUtils.serialize(serializeTestObject);
         SerializeTestObject deserialize = SerializationUtils.<SerializeTestObject>deserialize(serialize);
-        System.out.println(deserialize);
+        System.out.println("deserialize");
         System.out.println(serialize.length);
 
         byte[] serializeHe = Hessian2Utils.serialize(serializeTestObject);
         SerializeTestObject deserializeHe = Hessian2Utils.<SerializeTestObject>deserialize(serializeHe);
-        System.out.println(deserializeHe);
+        System.out.println("deserializeHe");
         System.out.println(serializeHe.length);
 
         byte[] serializeHeKryo = KryoUtils.serialization(serializeTestObject);
         SerializeTestObject deserializeKryo = KryoUtils.deserialization(serializeHeKryo, SerializeTestObject.class);
-        System.out.println(deserializeKryo);
+        System.out.println("deserializeKryo");
         System.out.println(serializeHeKryo.length);
-
+        System.out.println("json");
         System.out.println(JSON.toJSONString(serializeTestObject).getBytes(StandardCharsets.UTF_8).length);
     }
 }

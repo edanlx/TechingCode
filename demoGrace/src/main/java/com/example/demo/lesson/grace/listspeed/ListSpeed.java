@@ -11,7 +11,9 @@ import java.util.stream.IntStream;
 
 public class ListSpeed {
     public static void main(String[] args) {
-        addCompare();
+//        addCompare();
+        foreachCompare();
+//        addAllCompare();
     }
 
     public static void addCompare() {
@@ -24,29 +26,31 @@ public class ListSpeed {
         LinkedList<Integer> linkedListHeadNon = new LinkedList<>();
         LinkedList<Integer> linkedListTailNon = new LinkedList<>();
         StopWatch sw = new StopWatch();
+        // arrayList 头插太慢了直接去掉比较
 //        sw.start("arraysListHeadNon");
 //        listArray.stream().forEach(s -> arraysListHeadNon.add(0, s));
 //        sw.stop();
 //        sw.start("arraysListHead");
 //        listArray.stream().forEach(s -> arraysListHead.add(0, s));
 //        sw.stop();
-        sw.start("arraysListTailNon");
+        sw.start("不带初始化大小arrayList的尾插");
         listArray.stream().forEach(s -> arraysListTailNon.add(s));
         sw.stop();
-        sw.start("arraysListTailHead");
+        sw.start("带初始化大小arrayList的尾插");
         listArray.stream().forEach(s -> arraysListTailHead.add(s));
         sw.stop();
-        sw.start("linkedListHeadNon");
+
+        sw.start("链表头插");
         listArray.stream().forEach(s -> linkedListHeadNon.addFirst(s));
         sw.stop();
-        sw.start("linkedListTailNon");
+        sw.start("链表尾插");
         listArray.stream().forEach(s -> linkedListTailNon.add(s));
         sw.stop();
         System.out.println(sw.prettyPrint());
     }
 
     public static void foreachCompare() {
-        List<Integer> listArray = IntStream.range(0, 10000).boxed().collect(Collectors.toList());
+        List<Integer> listArray = IntStream.range(0, 1000000).boxed().collect(Collectors.toList());
         ArrayList<Integer> arrays = new ArrayList<>(listArray);
         LinkedList<Integer> linked = new LinkedList<>(listArray);
         StopWatch sw = new StopWatch();
