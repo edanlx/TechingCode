@@ -1,7 +1,5 @@
 package com.example.demo.lesson.grace.guava;
 
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.HashBiMap;
@@ -13,17 +11,12 @@ import com.google.common.collect.Sets;
 import com.google.common.collect.Table;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
-import com.google.common.hash.BloomFilter;
-import com.google.common.hash.Funnels;
-import com.google.common.util.concurrent.RateLimiter;
-import lombok.SneakyThrows;
 import org.springframework.util.StopWatch;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -91,20 +84,6 @@ public class GuavaExample {
         List<Integer> list1 = Stream.of(1, 2, 3, 4).collect(Collectors.toList());
         List<Integer> list2 = Stream.of(2, 3, 4, 5).collect(Collectors.toList());
         System.out.println(Lists.cartesianProduct(list1, list2));
-    }
-
-    public static void hash() {
-        // 存储格式，大小，误报率(如果判断出来不存在则一定不存在，如果判断出来存在则有可能存在有可能不存在，因为其机制和hash非常相似存在多个值对一个hash的情况)
-        // 一般会根据订单号，如果不行的话可以使用byte数组
-        BloomFilter<Integer> bloomFilter = BloomFilter.create(Funnels.integerFunnel(), 2000, 0.0001);
-        IntStream.range(0, 10000).forEach(bloomFilter::put);
-        System.out.println(bloomFilter.mightContain(1));
-        // 只有-10、-7、-5、-2,因为这里的预期数据与实际相差比较大，所以布隆过滤并不完全
-        IntStream.range(-10, 0).forEach(s -> {
-            if (!bloomFilter.mightContain(s)) {
-                System.out.println(s);
-            }
-        });
     }
 
     public static void newCollections() {
@@ -226,16 +205,4 @@ public class GuavaExample {
         List<Integer> collect = Stream.of(1, 2, 3, 4).collect(Collectors.toList());
         List<Integer> integers = ImmutableList.copyOf(collect);
     }
-
-    @SneakyThrows
-    public static void rate() {
-        // 这里直接设置的就QPS(每秒查询率)
-        RateLimiter rateLimiter = RateLimiter.create(0.01);
-        while (true) {
-            System.out.println(rateLimiter.tryAcquire());
-            Thread.sleep(300);
-        }
-    }
-
-
 }
