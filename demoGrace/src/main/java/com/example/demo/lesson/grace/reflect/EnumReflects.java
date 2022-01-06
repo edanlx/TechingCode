@@ -53,6 +53,7 @@ public class EnumReflects {
 
     public static void main(String[] args) {
         System.out.println(getListMap(TestEnum.class));
+        Map<String, TestEnum> stringTestEnumMap = enumToMap(TestEnum.class, TestEnum::getLanguage);
         System.out.println(enumToMap(TestEnum.class, TestEnum::getLanguage));
     }
 }

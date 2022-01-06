@@ -120,6 +120,7 @@ public class MultiList {
     }
 
     private static List<Integer> handleMultiList(List data, List<Method> methodList, int step, List<List> result) {
+        // 经过了几层
         List<Integer> intList = new ArrayList<>();
         if (CollectionUtils.isEmpty(data)) {
             return intList;
@@ -129,14 +130,18 @@ public class MultiList {
                 return;
             }
             if (step < methodList.size()) {
+                // 还有下级
                 List newData = (List) ReflectionUtils.invokeMethod(methodList.get(step), l);
                 List<Integer> integers = handleMultiList(newData, methodList, step + 1, result);
+                // 从最末级往上递归回撤时，往第一个位置添加当前级
                 for (Integer integer : integers) {
                     result.get(integer).add(0, l);
                 }
                 intList.addAll(integers);
             } else {
+                // 组装最末级数据
                 result.add(Stream.of(l).collect(Collectors.toList()));
+                // 当前l所处result的位置
                 intList.add(result.size() - 1);
             }
         });

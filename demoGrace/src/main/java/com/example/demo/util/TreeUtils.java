@@ -85,7 +85,7 @@ public class TreeUtils {
      * @param setChildListFn   设置递归的方法
      * @param idFn             获取id的方法
      * @param pidFn            获取父id的方法
-     * @param getRootCondition 获取根节点的提哦啊见
+     * @param getRootCondition 获取根节点的方法
      * @return {@link List<F>}
      * @author 876651109@qq.com
      * @date 2021/3/1 8:18 下午
