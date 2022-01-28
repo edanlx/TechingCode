@@ -1,18 +1,15 @@
 package com.example.demo.util;
 
 import com.example.demo.bean.TestTreeObj;
-import org.springframework.util.CollectionUtils;
+import org.apache.commons.collections4.CollectionUtils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
+
+;
 
 /**
  * 树和平铺相关工具类
@@ -124,7 +121,7 @@ public class TreeUtils {
     private static <F, T> void assembleTree(F current, Map<T, List<F>> map, BiConsumer<F, List<F>> setChildListFn, Function<F, T> idFn, BiConsumer<Integer, F> listen, int idx) {
         List<F> fs = map.get(idFn.apply(current));
         setChildListFn.accept(current, fs);
-        if (CollectionUtils.isEmpty(fs)) {
+        if (CollectionUtils.isNotEmpty(fs)) {
             fs.forEach(l -> assembleTree(l, map, setChildListFn, idFn, listen, idx + 1));
         }
         if (listen != null) {
