@@ -1,0 +1,1 @@
+在生成beanDefinition中相关写法
