@@ -1,8 +1,8 @@
-package com.example.demo.lesson.spring;
+package com.example.demo.lesson.spring.simplestart;
 
 
 import org.mybatis.spring.annotation.MapperScan;
 
-@MapperScan
+@MapperScan("com")
 public class MybatisTest {
 }
