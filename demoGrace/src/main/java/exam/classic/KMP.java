@@ -1,4 +1,4 @@
-package exam;
+package exam.classic;
 
 public class KMP {
     public static void main(String[] args) {

@@ -18,6 +18,6 @@ public class Order3 {
 
     @GetMapping(value = "/hello")
     public String echo() {
-        return orderService.getHello();
+        return orderService.getHello("abc");
     }
 }
