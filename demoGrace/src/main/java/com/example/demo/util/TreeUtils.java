@@ -50,6 +50,14 @@ public class TreeUtils {
         List<TestTreeObj> result2 = new ArrayList<>();
         treeToListDeep(testTreeObjs, result2, TestTreeObj::getTestTreeObj, (l) -> l.getPid() == 0);
         System.out.println(result2);
+        System.out.println("loopTree示例过滤出以1结尾的id");
+        List<TestTreeObj> filterResult = new ArrayList<>();
+        loopTree(testTreeObjs, TestTreeObj::getTestTreeObj, s -> {
+            if (String.valueOf(s.getId()).endsWith("1")) {
+                filterResult.add(s);
+            }
+        });
+        System.out.println(filterResult.size());
     }
 
     /**
